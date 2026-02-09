@@ -1,0 +1,1 @@
+Számitógépi Grafika 2025/26/2
