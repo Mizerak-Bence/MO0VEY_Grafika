@@ -1,0 +1,30 @@
+exercises:
+  - question: |
+      Paraméteres felületek \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Milyen módokon írhatunk le felületeket (matematikai megközelítésben)?
+      \item[(1)] Differenciálgeometriai értelemben hogyan definiálunk egy felületet?
+      \item[(2)] Írja le a paraméteres felületek gyakran használt pontbeli jellemzőit! 
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Vonalfelületek \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Írja le, hogy mit nevezünk vonalfelületeknek!
+        \item[(2)] Adja meg a két tipikus származtatási/előállítási módjukat!
+        \item[(1)] Készítsen ábrát!
+      \end{itemize}
+    answer:
+      ANS
+  - question: |
+      Mozgó görbe által súrolt felület \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Hogyan írhatunk fel mozgó görbe által súrolt felületeket?
+        \item[(1)] Írja fel a felület paraméteres alakját!
+        \item[(1)] Készítsen ábrát!
+        \item[(1)] Említsen néhány így előállítható felületet!
+      \end{itemize}
+    answer:
+      ANS
+

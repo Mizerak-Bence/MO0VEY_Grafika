@@ -1,0 +1,153 @@
+\documentclass[a4paper,12pt]{article}
+
+% Set margins
+\usepackage[hmargin=2.5cm, vmargin=2cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+% Graphic packages
+\usepackage{graphicx}
+
+% Colors
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+% Enumeration
+\usepackage{enumitem}
+
+% Links
+\usepackage{hyperref}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+	{\Large ÜTEMTERV -- \texttt{GEMAK243-B}}
+
+	\bigskip
+
+	{\huge \textbf{Párhuzamos algoritmusok}}
+	
+	\medskip
+	
+	{\large Programtervező informatikus BSc,
+	
+	nappali tagozat, tavaszi félév}
+
+	\medskip
+	
+	\textit{Előfeltétel: Objektum orientált programozás (GEIAL-313B)}
+\end{center}
+
+\vskip 5mm
+
+\noindent \textbf{1. hét}: A párhuzamos algoritmusok alapvető fogalmai, tételei. PRAM, CREW, CRCW, EREW modellek áttekintése.
+Számítási költség és hatékonyság jellemzése.
+Brent tétele. Amdahl tétele.
+Párhuzamos és konkurrens végrehajtás ábrázolási módjai.
+Prefixszámítás.
+Végrehajtás ütemezése.
+
+\bigskip
+
+\noindent \textbf{2. hét}: Párhuzamos végrehajtási módok. Hardveres és szoftveres környezet. \textit{Lost update} probléma. Szinkronizálás. Zárolási mechanizmusok. Kommunikáció. Memóriakezelés. Pipeline végrehajtás.
+
+\bigskip
+
+\noindent \textbf{3. hét}: Szálkezelés. POSIX szálak (\texttt{pthread} függvénykönyvtár). További szálkezelő függvénykönyvtárak áttekintése.
+
+\bigskip
+
+\noindent \textbf{4. hét}: A konkurrens és párhuzamos végrehajtás nyelvi szintű megjelenése. Az OpenMP függvénykönyvtár.
+
+\bigskip
+
+\noindent \textbf{5. hét}: Szekvenciális programok kommunikációja (\textit{CSP, Communicating Sequential Processes}). Az aktor modell. Az MPI szabvány. Az Open MPI áttekintése, működésének és használatának bemutatása.
+
+\bigskip
+
+\noindent \textbf{6. hét}: Rendező algoritmusok: Összefésülés. Batcher-féle páros-páratlan összefésülés. Összefésülő rendezés. Gyorsrendezés. Buborék és Shell rendezés. Leszámláló rendezés.
+
+\bigskip
+
+\noindent \textbf{7. hét}: Numerikus módszerek: mátrix szorzás, mátrix inverz számítás, numerikus integrálás.
+
+\bigskip
+
+\noindent \textbf{8. hét}: Statisztika: leíró statisztikák számítása, hisztogram számítása, Monte-Carlo módszer.
+
+\bigskip
+
+\noindent \textbf{9. hét}: Lekérdezések: Szövegláncok, szövegek keresése. Halmazok, halmazműveletek.
+
+\bigskip
+
+\noindent \textbf{10. hét}: Gráfalgoritmusok: összefüggő komponensek keresése. Minimális feszítőfa számítása. Tranzitív lezárt. Legrövidebb utak számítása.
+
+\bigskip
+
+\noindent \textbf{11. hét}: Grafikai algoritmusok: konvex burok meghatározása. Kitöltő algoritmusok. Konvolúciós szűrők megvalósítása.
+
+\bigskip
+
+\noindent \textbf{12. hét}: Optimalizálás: Genetikus algoritmusok, Részecskeraj optimalizáció (\textit{PSO, Particle Swarm optimization}).
+
+\bigskip
+
+\noindent \textbf{13. hét}: Klaszterezés, osztályozás: K-közép algoritmus (\textit{K-means}). Hierarchikus agglomeratív klaszterezés.
+
+\bigskip
+
+\noindent \textbf{14. hét}: Klasszikus mesterséges intelligencia algoritmusok: Minimax algoritmus, Alfa-béta metszés.
+
+\newpage
+
+\noindent \textbf{Az aláírás megszerzésének feltétele}
+
+\noindent A gyakorlatokon való aktív részvétel. Egyéni feladat elkészítése a \texttt{pthread}, az OpenMPI függvénykönyvtárak és egy szabadon választott (párhuzamos programok készítéséhez használt) technológia segítségével. Az elvégzett mérések és a kapott eredmények dokumentálása és bemutatása.
+
+\vskip 1cm
+
+\noindent \textbf{A vizsga}
+
+\noindent A vizsga írásbeli lesz, mely egyaránt tartalmaz elméleti és gyakorlati kérdéseket is.
+
+\vskip 1cm
+
+\noindent \textbf{Ponthatárok}
+
+\noindent A dolgozatokon maximálisan 12 pontot lehet szerezni. Az érdemjegyekre az alábbi ponthatárok vonatkoznak.
+
+\begin{center}
+\begin{tabular}{|c|c|}
+pont & érdemjegy \\
+\hline
+0-5 & 1 \\
+6 & 2 \\
+7-8 & 3 \\
+9-10 & 4 \\
+11-12 & 5 \\
+\hline
+\end{tabular}
+\end{center}
+
+\vskip 18mm
+
+\hskip 10cm Piller Imre
+
+\hskip 7cm Alkalmazott Matematikai Intézeti Tanszék
+
+\vskip 5mm
+
+\noindent Miskolc, 2022. január 28.
+
+\end{document}

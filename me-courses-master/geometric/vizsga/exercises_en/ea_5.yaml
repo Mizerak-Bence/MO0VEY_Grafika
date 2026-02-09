@@ -1,0 +1,63 @@
+exercises:
+  - question: |
+      Image formats \textit{(2 points)}
+      \begin{itemize}
+      \item[(1)] Let overview the main image formats and their commonly used classification!
+      \item[(1)] List the most frequently used file formats and describe them (with mentioning the abbreviations)!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+
+      Grayscale mapping \textit{(2 points)}
+      \begin{itemize}
+      \item[(2)] Let define at least 3 calculation methods, which are able to map an RGB color to a grayscale color!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Noise types \textit{(2 points)}
+      \begin{itemize}
+      \item[(2)] List at least 4 types of noises and their reasons!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Histogram calculation \textit{(2 points)}
+      \begin{itemize}
+      \item[(2)] Describe (by using mathematical formulas and/or pseudo code) the calculation of image histogram!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Histogram operations \textit{(2 points)}
+      \begin{itemize}
+        \item[(1)] Let describe the histogram stretching and histogram equalization methods!
+        \item[(1)] Let illustrate it by drawing a figure!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Linear convolution \textit{(2 points)}
+      \begin{itemize}
+      \item[(2)] Let describe the linear convolutional filter by using a two dimensional kernel matrix!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Gaussian filter \textit{(2 points)}
+      \begin{itemize}
+      \item[(1)] What is the Gaussian filter?
+      \item[(1)] Show an example as an approximation by using discrete linear convolution!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Median filter \textit{(2 points)}
+      \begin{itemize}
+        \item[(1)] Let define the method of median filtering!
+        \item[(1)] Describe the main characteristics of the median filtering!
+      \end{itemize}
+    answer:
+      ...
+

@@ -1,0 +1,77 @@
+exercises:
+  - question: |
+      Szorozza össze az alábbi mátrixokat!
+      \[
+      A = \begin{bmatrix}
+      3 & -1 & 4 \\
+      2 & 3 & -3 \\
+      \end{bmatrix}, \quad
+      B = \begin{bmatrix}
+      1 & 4 \\
+      1 & 7 \\
+      2 & -4 \\
+      \end{bmatrix}
+      \]
+      \begin{itemize}
+      \item Írja fel a kapott eredmény mátrixot!
+      \item Rajzolja fel 4 számítási egység esetén a Gantt diagramot (az egységnyi idejűnek tekintett összeadás és szorzás műveletek figyelembe vételével)!
+      \item Számítsa ki a munka, költség, gyorsítás és hatékonyság értékeket!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Szorozza össze az alábbi mátrixokat!
+      \[
+      A = \begin{bmatrix}
+      3 & -1 \\
+      2 & 3  \\
+      \end{bmatrix}, \quad
+      B = \begin{bmatrix}
+      1 & 4 \\
+      1 & 7 \\
+      \end{bmatrix}
+      \]
+      \begin{itemize}
+      \item Írja fel a kapott eredmény mátrixot!
+      \item Rajzolja fel 5 számítási egység esetén a Gantt diagramot (az egységnyi idejűnek tekintett összeadás és szorzás műveletek figyelembe vételével)!
+      \item Számítsa ki a munka, költség, gyorsítás és hatékonyság értékeket!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Szorozza össze az alábbi mátrixokat!
+      \[
+      A = \begin{bmatrix}
+      3 & -1 & 4 \\
+      \end{bmatrix}, \quad
+      B = \begin{bmatrix}
+      1 & 4 & 5 & -2 \\
+      1 & 7 & 4 & 0 \\
+      2 & -4 & -6 & 1 \\
+      \end{bmatrix}
+      \]
+      \begin{itemize}
+      \item Írja fel a kapott eredmény mátrixot!
+      \item Rajzolja fel 5 számítási egység esetén a Gantt diagramot (az egységnyi idejűnek tekintett összeadás és szorzás műveletek figyelembe vételével)!
+      \item Számítsa ki a munka, költség, gyorsítás és hatékonyság értékeket!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Számítsa ki az $X = [14, 8, 22, 29, 11, 18, 27]$ minta gyakoriság hisztogramját a $[0, 30)$ intervallumot 3 egyenlő részre osztva!
+      \begin{itemize}
+      \item Rajzolja fel a hisztogramot!
+      \item PRAM CREW modellt és 4 számítási egységet feltételezve rajzolja fel a Gantt diagramot!
+      \item Számítsa ki a munka, költség, gyorsítás és hatékonyság értékeket!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Számítsa ki az $X = [14, 8, 22, 29, 11, 18, 27]$ minta gyakoriság hisztogramját a $[0, 32)$ intervallumot 4 egyenlő részre osztva!
+      \begin{itemize}
+      \item Rajzolja fel a hisztogramot!
+      \item PRAM CREW modellt és 3 számítási egységet feltételezve rajzolja fel a Gantt diagramot!
+      \item Számítsa ki a munka, költség, gyorsítás és hatékonyság értékeket!
+      \end{itemize}
+    answer:
+      ...

@@ -1,0 +1,197 @@
+\documentclass[a4paper]{article}
+
+% Set margins
+\usepackage[hmargin=2.5cm, vmargin=3cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+\usepackage{xcolor}
+
+% Görbék 4
+% Spline-ok 4
+% Bézier görbe 4
+% Felületek 4
+% Képfeldolgozás 2
+% Számítási feladat 6
+
+\begin{document}
+
+\pagestyle{empty}
+
+Miskolci Egyetem, Matematikai Intézet
+
+\hskip 10cm Név:
+
+\medskip
+
+\hskip 10cm Neptun-kód:
+
+\begin{center}
+   \large \textbf{Vizsga zárthelyi dolgozat\\
+   GEOMETRIAI MODELLEZÉS (GEAGT232-M) c. tárgyból}
+\end{center}
+
+\bigskip
+
+\noindent \textbf{1. Feladat} Kísérő triéder \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Ismertesse az $\textbf{r}(t), t \in [a, b]$ térgörbe kísérőtriéderét!
+	\item[(1)] Nevezze meg ennek vektorait, azok számítását,
+	\item[(1)] síkjait.
+	\item[(1)] Készítsen hozzá ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{2. Feladat}
+Görbék paraméterezése \textit{(4 pont)}
+\begin{itemize}
+	\item[(4)] Mutassa be az interpolációs spline-ok paraméterezésének 4 tipikus esetét!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{3. Feladat}
+Bézier görbe \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Definiálja a Bernstein polinomot!
+	\item[(1)] Írja fel a Bézier görbe paraméteres alakját Bernstein polinom segítségével!
+	\item[(2)] Soroljon fel a Bézier görbe tulajdonságai közül legalább 4-et!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{4. Feladat}
+Vonalfelületek \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Írja le, hogy mit nevezünk vonalfelületeknek!
+	\item[(2)] Adja meg a két tipikus származtatási/előállítási módjukat!
+	\item[(1)] Készítsen ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{5. Feladat}
+Hisztogram műveletek \textit{(2 pont)}
+\begin{itemize}
+	\item[(1)] Ismertesse a hisztogram széthúzás műveletét szürkeárnyalatos képek esetén!
+	\item[(1)] Készítsen hozzá ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{6. Feladat}
+Számítási feladat \textit{(6 pont)}
+
+\medskip
+
+Adottak a síkon a $(2, 1), (3, 3), (5, 2), (6, 4), (8, 4)$ pontok.
+\begin{itemize}
+	\item[(1)] Számítsa ki a Catmull-Rom spline pontjaihoz tartozó érintőket! 
+	\item[(1)] Készítsen hozzá ábrát!
+	\item[(1)] Számítsa ki a 3. ponthoz tartozó Bessel parabolát!
+	\item[(1)] Számítsa ki a 3. pontban a Bessel érintőt!
+	\item[(1)] Tekintse az első 4 pontot, mint kontroll pontot, és számítsa ki a Bézier görbe pontját $t = 0.4$ paraméternél (de Casteljau algoritmussal)!
+	\item[(1)] Írja fel a Bézier görbe $t = 0.4$ paraméternél való kettévágásával adódó kontrollpontokat!
+\end{itemize}
+
+\bigskip
+
+\noindent \textit{Ponthatárok: 0-11 elégtelen, 12-15 elégséges, 16-18 közepes, 19-21 jó, 22-24 jeles}
+
+\newpage
+
+
+Miskolci Egyetem, Matematikai Intézet
+
+\hskip 10cm Név:
+
+\medskip
+
+\hskip 10cm Neptun-kód:
+
+\begin{center}
+	\large \textbf{Vizsga zárthelyi dolgozat\\
+		GEOMETRIAI MODELLEZÉS (GEAGT232-M) c. tárgyból}
+\end{center}
+
+\bigskip
+
+\noindent \textbf{1. Feladat} Görbék tulajdonságai \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Sorolja fel a paraméteres térgörbék gyakran használt pontbeli tulajdonságait!
+	\item[(1)] Mit nevezünk ívhossznak, és hogyan számítható?
+	\item[(1)] Definiálja a görbületet!
+	\item[(1)] Készítsen hozzá ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{2. Feladat}
+Overhauser spline \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Ismertesse az Overhauser spline-t!
+	\item[(2)] Írja fel a paraméteres alakját!
+	\item[(1)] Készítsen hozzá ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{3. Feladat}
+Bézier görbe \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Mutassa be a de Casteljau algoritmust!
+	\item[(1)] Készítsen ábrát!
+	\item[(2)] Soroljon fel a Bézier görbe tulajdonságai közül legalább 4-et!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{4. Feladat}
+Mozgó görbe által súrolt felület \textit{(4 pont)}
+\begin{itemize}
+	\item[(1)] Hogyan írhatunk fel mozgó görbe által súrolt felületeket?
+	\item[(1)] Írja fel a felület paraméteres alakját!
+	\item[(1)] Készítsen ábrát!
+	\item[(1)] Említsen néhány így előállítható felületet!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{5. Feladat}
+Medián szűrő \textit{(2 pont)}
+\begin{itemize}
+	\item[(1)] Ismertesse a medián szűrő működését!
+	\item[(1)] Készítsen hozzá ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textbf{6. Feladat}
+Számítási feladat \textit{(6 pont)}
+
+\medskip
+
+Adottak a síkon a $(2, 2), (3, 4), (6, 4), (8, 1)$ pontok.
+\begin{itemize}
+	\item[(1)] Ezeket kontrollpontoknak tekintve számítsa ki a Bézier görbe pontját a $t = 0.3$ paraméternél (de Casteljau algoritmussal)!
+	\item[(1)] Készítsen hozzá ábrát!
+	\item[(1)] Határozza meg a pontbeli érintőt!
+	\item[(1)] Írja fel a pontbeli normálvektort!
+	\item[(1)] Növelje a görbe fokszámát, és adja meg a hozzá tartozó kontrollpontokat!
+	\item[(1)] A fokszámnöveléshez készítsen külön ábrát!
+\end{itemize}
+
+\bigskip
+
+\noindent \textit{Ponthatárok: 0-11 elégtelen, 12-15 elégséges, 16-18 közepes, 19-21 jó, 22-24 jeles}
+
+\end{document}

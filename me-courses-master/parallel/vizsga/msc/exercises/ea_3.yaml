@@ -1,0 +1,29 @@
+exercises:
+  - question: |
+      \begin{itemize}
+      \item Mennyinek kell lennie legalább a párhuzamosítható részek arányának, hogy ha legalább 12-szeres gyorsítást szeretnénk elérni?
+      \item Tegyük fel, hogy egy algoritmusban a párhuzamosítható részek aránya 87\%. Legalább mennyi számítási egységre van szükségünk, hogy 7-szeres gyorsítást el tudjunk érni?
+      \end{itemize}
+    answer:
+      ANS
+  - question: |
+      \begin{itemize}
+      \item Mennyinek kell lennie legalább a párhuzamosítható részek arányának, hogy ha legalább 9-szeres gyorsítást szeretnénk elérni?
+      \item Tegyük fel, hogy egy algoritmusban a párhuzamosítható részek aránya 95\%. Legalább mennyi számítási egységre van szükségünk, hogy 12-szeres gyorsítást el tudjunk érni?
+      \end{itemize}
+    answer:
+      ANS
+  - question: |
+      \begin{itemize}
+      \item Egy programban a párhuzamosítható részek aránya 70\%. Hogy ha 16 számításokat végző egységünk van, akkor mekkora az elérhető maximális gyorsítás?
+      \item Tudjuk, hogy 2.5-szörös gyorsítást tudunk elérni maximálisan egy adott program párhuzamos futtatásakor. A program 80\%-a párhuzamosítható. Mennyi számítási egységünk van?
+      \end{itemize}
+    answer:
+      ANS
+  - question: |
+      \begin{itemize}
+      \item Egy programban a párhuzamosítható részek aránya 90\%. Hogy ha 20 számításokat végző egységünk van, akkor mekkora az elérhető maximális gyorsítás?
+      \item Tudjuk, hogy 2-szeres gyorsítást tudunk elérni maximálisan egy adott program párhuzamos futtatásakor. A program 60\%-a párhuzamosítható. Mennyi számítási egységünk van?
+      \end{itemize}
+    answer:
+      ANS

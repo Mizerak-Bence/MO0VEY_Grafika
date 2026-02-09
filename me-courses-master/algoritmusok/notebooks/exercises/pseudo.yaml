@@ -1,0 +1,89 @@
+exercises:
+  - question: |
+      Írjon egy procedúrát, amely egy $L$, egyszeresen láncolt listának kiszámítja a benne lévő kulcsértékek maximális értékét!
+      (Feltételezzük, hogy legalább egy eleme van a listának.)
+    answer:
+      \noindent LISTA\_MAX(@L, @max) \\
+      // Input; L, láncolt lista \\
+      // Output; max, maximális érték \\
+      $x \leftarrow \text{fej}[L]$ \\
+      $max \leftarrow -\infty$ \\
+      WHILE $x \neq NIL$ DO \\
+      \indent IF $max < \text{kulcs}[x]$ \\
+      \indent \indent THEN $max \leftarrow \text{kulcs}[x]$ \\
+      \indent $x \leftarrow \text{köv}[x]$ \\
+      RETURN(max)
+  - question: |
+      Írjon egy procedúrát, amely egy $L$, egyszeresen láncolt listának kiszámítja a benne lévő kulcsértékek minimális értékét!
+      (Feltételezzük, hogy legalább egy eleme van a listának.)
+    answer:
+      \noindent LISTA\_MIN(@L, @min) \\
+      // Input; L, láncolt lista \\
+      // Output; min, minimális érték \\
+      $x \leftarrow \text{fej}[L]$ \\
+      $max \leftarrow +\infty$ \\
+      WHILE $x \neq NIL$ DO \\
+      \indent IF $\text{kulcs}[x] < min$ \\
+      \indent \indent THEN $min \leftarrow \text{kulcs}[x]$ \\
+      \indent $x \leftarrow \text{köv}[x]$ \\
+      RETURN(min)
+  - question: |
+      Írjon egy procedúrát, amely egy $L$, egyszeresen láncolt listának kiszámítja a benne lévő kulcsértékek összegét!
+    answer:
+      \noindent LISTA\_SUM(@L, @s) \\
+      // Input; L, láncolt lista \\
+      // Output; s, kulcsértékek összege \\
+      $x \leftarrow \text{fej}[L]$ \\
+      $s \leftarrow 0$ \\
+      WHILE $x \neq NIL$ DO \\
+      \indent $s \leftarrow s + \text{kulcs}[x]$ \\
+      \indent $x \leftarrow \text{köv}[x]$ \\
+      RETURN(s)
+  - question: |
+      Írjon egy procedúrát, amelyik ellenőrzi, hogy egy tömbben a számértékek szigorúan monoton növekvő sorozatot alkotnak-e!
+    answer:
+      \noindent MONOTON\_E(@A, @monoton) \\
+      // Input; A, számértékek tömbje \\
+      // Output; monoton, logikai érték \\
+      $monoton \leftarrow igaz$ \\
+      FOR $i \leftarrow 2$ TO Hossz[$A$] DO \\
+      \indent IF $a_{i-1} \geq a_{i}$ \\
+      \indent \indent THEN $monoton \leftarrow hamis$ \\
+      RETURN($monoton$)    
+  - question: |
+      Írjon egy procedúrát, amelyik visszaadja egy tömbös reprezentációjú veremben a szabad helyek számát!
+    answer:
+      \noindent SZABAD\_VEREM(@S, @n) \\
+      // Input; S, verem \\
+      // Output; $n$, szabad helyek száma \\
+      $n \leftarrow \text{tömbméret}[S] - \text{tető}[S]$ \\
+      RETURN($n$)
+  - question: |
+      Írjon egy procedúrát, amelyik ellenőrzi, hogy egy tömbös reprezentációval adott veremben megtalálható-e egy adott $k$ érték!
+    answer:
+      \noindent VEREM\_VAN(@S, k, @van) \\
+      // Input; S, verem \\
+      //        $k$, vizsgált érték \\
+      // Output; van, logikai érték \\
+      van $\leftarrow$ hamis \\
+      FOR $i \leftarrow 1$ TO tető[$S$] DO \\
+      \indent IF $s_i = k$ \\
+      \indent \indent THEN van $\leftarrow$ igaz \\
+      RETURN(van)
+  - question: |
+      Írjon egy procedúrát, amelyik kiszámítja egy $Q$, tömbös reprezentációval adott sor elemeinek minimumát!
+      (Feltételezhetjük, hogy a sorban van legalább egy elem.)
+    answer:
+      \noindent SOR\_MIN(@Q, @min) \\
+      // Input; Q, számértékeket tartalmazó sor \\
+      // Output; min, a sor minimális értéke \\
+      $min \leftarrow \infty$ \\
+      $i \leftarrow \text{fej}[Q]$ \\
+      DO IF $q_i < min$ \\
+      \indent \indent THEN $min \leftarrow q_i$ \\
+      \indent INC($i$) \\
+      \indent IF $i > \text{tömbméret}[Q]$ \\
+      \indent \indent THEN $i \leftarrow 1$ \\
+      \indent WHILE $i \neq \text{vége}[Q]$ \\
+      RETURN(min)
+

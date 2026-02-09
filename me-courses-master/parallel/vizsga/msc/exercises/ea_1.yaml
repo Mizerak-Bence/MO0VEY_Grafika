@@ -1,0 +1,45 @@
+exercises:
+  - question: |
+      Írja le, hogy milyen előnyök, szempontok miatt érdemes a programok végrehajtását párhuzamosítani!
+    answer:
+      ...
+  - question: |
+      Mutassa be a memóriamodelleket (a számítási egység és az ahhoz rendelt memória viszonya alapján)!
+    answer:
+      ...
+  - question: |
+      Ismertesse a PRAM modellt!
+    answer:
+      ...
+  - question: |
+      Ismertesse a Gustafson-Barsis törvényt!
+    answer:
+      ...
+  - question: |
+      Ismertesse a pipeline párhuzamosítási módszert!
+    answer:
+      ...
+  - question: |
+      Hasonlítsa össze a szálakkal és processzekkel történő párhuzamosítást (azok előnyeivel, hátrányaival)!
+    answer:
+      ...
+  - question: |
+      Ismertesse, hogy mit jelent a kritikus szakasz és a zárolás!
+    answer:
+      ...
+  - question: |
+      Mi a barrier és milyen esetben használatos?
+    answer:
+      ...
+  - question: |
+      Ismertesse a lost update problémát, és annak megoldását!
+    answer:
+      ...
+  - question: |
+      Mutassa be a POSIX szálak kezelésének alapvető műveleteit!
+    answer:
+      ...
+  - question: |
+      Ismertesse röviden az OpenMP függvénykönyvtárat!
+    answer:
+      ...

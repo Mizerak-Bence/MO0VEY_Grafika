@@ -1,0 +1,79 @@
+body {
+	background-color: #222222;
+}
+
+/* Map */
+
+table, td {
+	border: 0px;
+	padding: 0px;
+	border-collapse: collapse;
+}
+
+td.empty_X {
+	width: 30px;
+	height: 30px;
+	background-image: url(empty.png);
+}
+
+td.empty_X:hover {
+	width: 30px;
+	height: 30px;
+	background-image: url(hover_X.png);
+}
+
+td.empty_O {
+	width: 30px;
+	height: 30px;
+	background-image: url(empty.png);
+}
+
+td.empty_O:hover {
+	width: 30px;
+	height: 30px;
+	background-image: url(hover_O.png);
+}
+
+td.sign_X {
+	width: 30px;
+	height: 30px;
+	background-image: url(sign_X.png);
+}
+
+td.sign_O {
+	width: 30px;
+	height: 30px;
+	background-image: url(sign_O.png);
+}
+
+td.winner_X {
+	width: 30px;
+	height: 30px;
+	background-image: url(winner_X.png);
+}
+
+td.winner_O {
+	width: 30px;
+	height: 30px;
+	background-image: url(winner_O.png);
+}
+
+div.map {
+	margin-top: 40px;
+	margin-left: 220px;
+}
+
+/* Menu */
+
+div.menu {
+	position: fixed;
+	margin-left: 20px;
+
+	padding: 8px;
+
+	background-color: #DDBB55;
+
+	border: double;
+	border-color: white;
+}
+

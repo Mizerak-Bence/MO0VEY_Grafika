@@ -1,0 +1,157 @@
+exercises:
+  - question: |
+      Mi a különbség a szál és a könnyű súlyú szál között?
+    answer:
+      ...
+  - question: |
+      Mutassa be a 3 gyakori memóriamodellt (amely a számítási egységek és a memória közötti viszonyát adja meg)!
+    answer:
+      ...
+  - question: |
+      Mit nevezünk gyorsítótárnak (\textit{cache}-nek)?
+    answer:
+      ...
+  - question: |
+      Sorolja fel az elterjedt hálózati topológiákat!
+    answer:
+      ...
+  - question: |
+      Mutassa be (ábrákkal illusztrálva) a busz, gyűrű, rács, tórusz, hiperkocka, fa hálózati topológiákat!
+    answer:
+      ...
+  - question: |
+      Mutassa be a csővezeték (\textit{pipeline}) párhuzamosítási módot!
+    answer:
+      ...
+  - question: |
+      Mekkora a maximálisan elérhető gyorsítás elméleti felső határa pipeline párhuzamosítás esetén?
+    answer:
+      ...
+  - question: |
+      Mitől függ a pipeline párhuzamosítás hatékonysága?
+    answer:
+      ...
+  - question: |
+      Adjon egy példát a \textit{Lost Update} problémára!
+    answer:
+      ...
+  - question: |
+      Mire szolgál a zárolás (\textit{lock})?
+    answer:
+      ...
+  - question: |
+      Mit nevezünk szálaknak (párhuzamos algoritmusok témakörben)?
+    answer:
+      ...
+  - question: |
+      Melyek azok az adatok, amelyekhez a szálak egy processzen belül közösen férnek hozzá?
+    answer:
+      ...
+  - question: |
+      Egy processzen belül a szálaknak melyek azok az adatai, amelyek a szálakra nézve egyediek?
+    answer:
+      ...
+  - question: |
+      Mikor nevezünk egy implementációt szálbiztosnak (\textit{thread safe})?
+    answer:
+      ...
+  - question: |
+      Mi az a \textit{barrier}?
+    answer:
+      ...
+  - question: |
+      Mit jelent a kritikus szakasz (\textit{critical section})?
+    answer:
+      ...
+  - question: |
+      Milyen alapvető műveletek tartoznak a szálak kezeléséhez?
+    answer:
+      ...
+  - question: |
+      POSIX szálak esetében hogyan adhatnak át adatot egymás között a szálak?
+    anwser:
+      ...
+  - question: |
+      Milyen előnyei vannak a szálaknak a folyamatokhoz képest?
+    answer:
+      ...
+  - question: |
+      Miért szükséges OpenMP esetében a fordításhoz a \texttt{-fopenmp} direktíva?
+    answer:
+      ...
+  - question: |
+      Milyen gyakori redukciós műveleteket támogat az OpenMP?
+    answer:
+      ...
+  - question: |
+      JavaScript esetében mire szolgálnak az \texttt{async} és \texttt{await} kulcsszavak?
+    answer:
+      ...
+  - question: |
+      Milyen előnyei vannak az OpenMP használatának a POSIX szálakhoz képest?
+    answer:
+      ...
+  - question: |
+      Mit jelent az, hogy az OpenMP \textit{implicit barrier}-t használ?
+    answer:
+      ...
+  - question: |
+      Mutassa be a CSP modellt!
+    answer:
+      ...
+  - question: |
+      Hogyan kommunikálnak egymással a folyamatok CSP modell esetén?
+    answer:
+      ...
+  - question: |
+      Az Aktor modell esetében milyen jellemzői vannak az aktoroknak!
+    answer:
+      ...
+  - question: |
+      Az Aktor modell esetében milyen műveleteket hajthatnak végre az aktorok!
+    answer:
+      ...
+  - question: |
+      Mutassa be az Aktor modell esetében az üzenetküldés fő sajátosságait!
+    answer:
+      ...
+  - question: |
+      Milyen előnyei vannak az Aktor modellnek?
+    answer:
+      ...
+  - question: |
+      Milyen hátrányai vannak az Aktor modellnek?
+    answer:
+      ...
+  - question: |
+      Milyen problémát old meg az MPI szabvány?
+    answer:
+      ...
+  - question: |
+      Mi a különbség az MPI szabvány és az Open MPI között?
+    answer:
+      ...
+  - question: |
+      Mennyi a maximális távolság 8 dimenziós hiperkocka topológia esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi a maximális távolság 8 dimenziós hiperkocka topológia esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi a távolságok eloszlása 3 dimenziós hiperkocka topológia esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi a maximális távolság 8 elemű gyűrű topológia esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi a távolságok eloszlása 5 elemű gyűrű topológia esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi az átlagos távolság egy $2 \times 3$-as kétdimenziós rács topológia esetében?
+    answer:
+      ...

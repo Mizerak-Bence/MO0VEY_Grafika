@@ -1,0 +1,56 @@
+exercises:
+  - question: |
+      Interpolation \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] Let introduce the problem of the interpolation!
+      \item[(2)] Show the solution of the interpolation by using Lagrange interpolation (polynomials)!
+      \item[(1)] Mention some benefits and drawbacks of using this method!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Hermite arcs \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] What is the Hermite arc?
+      \item[(1)] Let introduce the constrainst and illustrate with a figure!
+      \item[(1)] How can we solve it (by using matrix form)?
+      \item[(1)] Let define the Hermite polynomials of degree 3!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Splines \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] What are the advantages of using the splines?
+      \item[(1)] How can we construct splines by using Hermite arcs?
+      \item[(1)] What are the Bessel parabolas?
+      \item[(1)] How can we use the Bessel parabolas in the case of splines?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Splines \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] How can we obtain the tangent vectors in the case of splines, only using the neightbour points?
+      \item[(1)] What is the Catmull-Rom spline? How can we calculate it?
+      \item[(2)] Let draw a figure as part of the answer!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Overhauser spline \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] What is the Overhauser spline?
+        \item[(2)] How can we calculate it (in parametric form)?
+        \item[(1)] Let draw a figure as part of the answer!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Curve parametrization \textit{(4 points)}
+      \begin{itemize}
+        \item[(4)] What are the commonly used parametrization methods in the case of spline interpolation?
+      \end{itemize}
+    answer:
+      ...
+

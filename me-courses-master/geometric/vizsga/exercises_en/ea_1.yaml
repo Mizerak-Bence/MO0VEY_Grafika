@@ -1,0 +1,41 @@
+exercises:
+  - question: |
+      Frennet-Serret Frame \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let define the Frennet-Serret Frame for the spatial curves $\textbf{r}(t), t \in [a, b]$.
+        \item[(1)] Let name its vectors and
+        \item[(1)] planes.
+        \item[(1)] Let visualize it on a figure!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Curve properties \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let name the frequently used point-wise properties of the spatial curves!
+        \item[(1)] What is the curve length and how can we calculate it?
+        \item[(1)] Let define the curvature!
+        \item[(1)] Let draw figures for the mentioned concepts!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Curve properties \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let define the tangent line!
+        \item[(1)] Let define the curvature!
+        \item[(1)] Let define the osculating circle!
+        \item[(1)] Let draw figures for the mentioned concepts!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Curve description methods \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let introduce the description methods of the planar and spatial curves!
+        \item[(1)] Let define the tangent vector and the binormal vector!
+        \item[(1)] Let define the osculating circle!
+        \item[(1)] Let draw figures for the mentioned concepts!
+      \end{itemize}
+    answer:
+      ...

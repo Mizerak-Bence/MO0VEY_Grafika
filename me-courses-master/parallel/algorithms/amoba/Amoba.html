@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="Amoba.css" />
+	<script src="Amoba.js"></script>
+	<title>Amőba</title>
+</head>
+
+<body>
+
+<div class="menu">
+	<table>
+		<tr>
+			<td class="sign_X" id="gamerSign" onClick="swapSign();"></td>
+			<td> : játékos</td>
+		</tr>
+		<tr>
+			<td class="sign_O" id="compSign" onClick="swapSign();"></td>
+			<td> : számítógép</td>
+		</tr>
+	</table>
+
+	<br />
+	<b>Pálya mérete:</b><br />
+
+	<select id="rowNum">
+		<option value="10">10</option>
+		<option value="12" selected>12</option>
+		<option value="14">14</option>
+		<option value="16">16</option>
+		<option value="18">18</option>
+		<option value="20">20</option>
+		<option value="22">22</option>
+		<option value="24">24</option>
+	</select>
+	sor <br />
+
+	<select id="columnNum">
+		<option value="10">10</option>
+		<option value="12" selected>12</option>
+		<option value="14">14</option>
+		<option value="16">16</option>
+		<option value="18">18</option>
+		<option value="20">20</option>
+		<option value="22">22</option>
+		<option value="24">24</option>
+	</select>
+	oszlop<br />
+
+	<br />
+
+	<b>Kezdés:</b><br />
+
+	<select id="first">
+		<option value="1" selected>játékos</option>
+		<option value="2">számítógép</option>
+	</select>
+
+	<br />
+	<br />
+	
+
+	<center>
+	<input type="button" value="Új játék" onClick="createTable()"></input>
+	</center>
+
+</div>
+
+<div class="map" id="AmobaTable"></div>
+</body>
+
+<!--
+<script>createTable();</script>
+-->
+
+</html>

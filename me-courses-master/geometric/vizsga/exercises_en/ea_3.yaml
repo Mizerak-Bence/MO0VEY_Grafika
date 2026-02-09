@@ -1,0 +1,39 @@
+exercises:
+  - question: |
+      Bézier curve \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let define the Bernstein polynomial (of degree $n$)!
+        \item[(1)] Let describe the parametric form of the Bézier curve by using Bernstein polynomials!
+        \item[(2)] Let describe (at least 4 of) the main properties of the Bézier curves!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier curve \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] Let introduce the de Casteljau algorithm!
+        \item[(1)] Illustrate the algorithm on a figure!
+        \item[(2)] Let describe (at least 4 of) the main properties of the Bézier curves!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier curve \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] What are the connections between the de Casteljau algorithm and the Bernstein polynomial form of the Bézier cuve?
+      \item[(1)] How can we calculate the derivative of the Bézier curve?
+      \item[(1)] Let define the hodograph!
+      \item[(1)] What does the variation diminishing property means?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier curve \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] How can we split the Bézier curve at the parameter $c \in \mathbb{R}$!
+      \item[(1)] How can we elevate the degree of a Bézier curve?
+      \item[(2)] Let illustrate the methods by figures!
+      \end{itemize}
+    answer:
+      ...
+

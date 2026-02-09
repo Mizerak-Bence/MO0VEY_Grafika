@@ -1,0 +1,106 @@
+\documentclass[a4paper,12pt]{article}
+
+% Set margins
+\usepackage[hmargin=2.5cm, vmargin=3cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+% Graphic packages
+\usepackage{graphicx}
+
+% Colors
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+% Enumeration
+\usepackage{enumitem}
+
+% Links
+\usepackage{hyperref}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+	{\Large ÜTEMTERV -- \texttt{GEMAK132ML}}
+
+	\bigskip
+
+	{\huge \textbf{Párhuzamos algoritmusok}}
+	
+	\medskip
+	
+	{\large Mérnökinformatikus MSc, levelező tagozat, őszi félév}
+\end{center}
+
+\bigskip
+
+\noindent \textbf{1. hét}
+
+\noindent PRAM, CREW, CRCW, EREW modellek áttekintése.
+Számítási költség és hatékonyság jellemzése.
+Brent tétele. Amdahl tétele.
+Párhuzamos és konkurrens végrehajtás ábrázolási módjai.
+Végrehajtás ütemezése. Memóriaszervezés, globális- és lokális memória elérése.
+Hálózati topológiák. Üzenetátadás.
+Példák párhuzamos végrehajtható problémákra, azok megoldási algoritmusaira.
+
+\bigskip
+
+\noindent \textbf{2. hét}
+
+\noindent Processzek és szálak az operációs rendszerekben.
+POSIX folyamatmodell.
+A \texttt{pthread} függvénykönyvtár áttekintése példákkal.
+
+\bigskip
+
+\noindent \textbf{3. hét}
+
+\noindent Az OpenMP függvénykönyvtár elemeinek bemutatása.
+\texttt{for} ciklusok párhuzamos végrehajtása.
+Az osztott memória elérése.
+A párhuzamosítás hatékonyságának vizsgálata.
+Az OpenMPI függvénykönyvtár áttekintése.
+Algoritmizálási problémák megoldása a függvénykönyvtár segítségével.
+Futási idők mérése.
+Kapott eredmények ábrázolása, összehasonlítása.
+
+\bigskip
+
+\noindent \textbf{4. hét}
+
+\noindent A \texttt{pthread}, OpenMP és OpenMPI összevetése. További példák vizsgálata párhuzamos algoritmusokra. Egyéni feladatok bemutatása.
+
+\vskip 1cm
+
+\noindent \textbf{Az aláírás megszerzésének feltétele}
+
+\noindent Egy előre egyeztetett számítási probléma megoldása párhuzamos algoritmus segítségével, C nyelven implementálva \texttt{pthread}, OpenMP és OpenMPI függvénykönyvtár használatával. A probléma, az algoritmus, a három implementáció és a hozzájuk kapcsolódó mérések bemutatása.
+
+\vskip 1cm
+
+\noindent \textbf{A vizsga}
+
+\noindent A vizsga írásbeli lesz, mely egyaránt tartalmaz elméleti és gyakorlati kérdéseket is.
+
+\vskip 18mm
+
+\hskip 10cm Piller Imre
+
+\hskip 7cm Alkalmazott Matematikai Intézeti Tanszék
+
+\vskip 5mm
+
+\noindent Miskolc, 2021. augusztus 27.
+
+\end{document}

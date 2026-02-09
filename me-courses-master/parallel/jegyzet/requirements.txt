@@ -1,0 +1,3 @@
+sphinx
+sphinx-mathjax-offline
+limix-sphinx-theme

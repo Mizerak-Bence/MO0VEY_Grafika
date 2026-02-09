@@ -1,0 +1,8 @@
+**************************
+Képfeldolgozás, gépi látás
+**************************
+
+Gépi látás alatt itt most elsősorban olyan módszereket értünk, amelyek a képfeldolgozási problémákat gépi tanulási módszerek segítségével igyekeznek megoldani.
+
+* https://web.uni-miskolc.hu/~matip/_downloads/image-processing/
+

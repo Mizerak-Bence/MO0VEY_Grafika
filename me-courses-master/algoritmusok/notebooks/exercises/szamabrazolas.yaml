@@ -1,0 +1,115 @@
+exercises:
+  - question: |
+      Előfordulhat-e, hogy egy számnak megegyezik az alsó- és felső egész része?
+      \begin{itemize}
+      \item Ha igen, akkor milyen esetben?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Igen. Az egészek esetében mindig megegyezik.
+  - question: |
+      Egy tetszőleges $x$ valós szám esetén a következők közül melyek lesznek egyenlőek egymással?
+      \[
+          \lceil x \rceil, -\lfloor x \rfloor, \lfloor -x \rfloor, \lceil -x \rceil
+      \]
+    answer:
+      $-\lfloor x \rfloor = \lceil -x \rceil$
+  - question: |
+      Mi a kerekítő függvény értelmezési tartománya és értékkészlete?
+    answer:
+      valós számok halmaza, egész számok halmaza
+  - question: |
+      Adja meg azon számok halmazát, amelyek megegyeznek a törtrészükkel, vagyis $x = \{x\}$.
+    answer:
+      $x \in [0, 1)$
+  - question: |
+      Mennyi különböző számjegyet tudunk használni 12-es számrendszerben? Melyik a legnagyobb?
+    answer:
+      12 számjegyet, B
+  - question: |
+      Hogy ha egy szám 16-os számrendszerben 3 számjegyből áll, akkor legalább és legfeljebb mennyi számjegyből fog állni 2-es számrendszerben?
+    answer:
+      Legalább 9, legfeljebb 12.
+  - question: |
+      A számjegyek számáról szóló tételben milyen (legszűkebb) számhalmazhoz tartozik és mit jelöl az $n + 1$ érték?
+    answer:
+      Az $n + 1$ természetes szám. A számjegyek számát jelöli.
+  - question: |
+      Egy nemnegatív egész szám esetén a nemnegatív osztók száma alapján hogyan tudjuk megállapítani, hogy az érték prímszám-e?
+    answer:
+      Pontosan 2-nek kell lennie.
+  - question: |
+      Maradékos osztás esetén milyen intervallumba fog esni az $r$ maradék, hogy ha az osztót $n$-nel jelöljük?
+    answer:
+      $0 \leq r \leq n$
+  - question: |
+      Írja fel az $u$ és $v$ egészek lineáris kombinációját az $\alpha$ és $\beta$ egész együtthatók segítségével!
+    answer:
+      $\alpha \cdot u + \beta \cdot v$
+  - question: |
+      Hogy ha $x|y$ és $y|x$, akkor mit tudunk mondani az $x$ és az $y$ értékek viszonyáról? (A $|$ az oszthatóságot jelöli.)
+    answer:
+      Egyenlőek lesznek, vagy egymás negáltjai.
+  - question: |
+      Milyen esetben fordulhat elő, hogy az $a$ és $b$ számok prímek, de nem relatív prímek?
+    answer:
+      Hogy ha $a = b$, mert akkor $\text{lnko}(a, b) = a = b$.
+  - question: |
+      Milyen tartományon változhat a $d^* = \text{lnko}(a, b)$ érték? (Az $a$ és $b$ nemnulla, egész értékek.)
+    answer:
+      $1 \leq d^* \text{min}(|a|, |b|)$
+  - question: |
+      Melyik kulcs és milyen algoritmus szükséges ahhoz, hogy kódolni tudjunk egy üzenetet RSA algoritmussal?
+    answer:
+      A publikus kulcs és a moduláris hatványozás algoritmusa.
+  - question: |
+      Melyik kulcs és milyen algoritmus szükséges ahhoz, hogy dekódolni tudjunk egy üzenetet RSA algoritmussal?
+    answer:
+      A titkos kulcs és a moduláris hatványozás algoritmusa.
+  - question: |
+      Tegyük fel, hogy az RSA algoritmusához a $p = 419$ és a $q = 631$ értékeket szeretnénk használni.
+      Mennyi lesz az $n$ és az $f$ értéke?
+    answer:
+      $n = 264389, f = 263340$
+  - question: |
+      Egy 32 bites bitmintázatot megnézve lehet-e tudni egyértelműen, hogy azzal egy lebegőpontos,
+      vagy egy egész értéket tároltak-e? Ha igen, akkor miből?
+    answer:
+      Nem.
+  - question: |
+      Mennyi számjegyből áll egy dupla pontosságú lebegőpontos számként ábrázolt érték
+      hexadecimális alakban felírva?
+    answer:
+      16
+  - question: |
+      Melyik tanult tétel segítségével adhatunk becslést az
+      Euklideszi algoritmus elvégzéséhez szükséges lépésszámra?
+    answer:
+      Lamé tétele
+  - question: |
+      Egy algoritmus esetében tudjuk az időbonyolultságról, hogy $T(n) = \Theta(n^2)$, amelyhez ismerjük
+      a $c_1 = 2$ és $c_2 = 3$ konstansokat. Milyen becslést tudunk adni egy $12$ méretű bemenet esetén a
+      számítási időre? (Feltételezzük, hogy az $n_0$ küszöbérték felett van.)
+    answer:
+      $288 \leq T(12) \leq 432$
+  - question: |
+      Egy algoritmus esetében tudjuk az időbonyolultságról, hogy $T(n) = \mathcal{O}(n)$, amelyhez ismerjük
+      a $c = 4$ konstanst. Milyen becslést tudunk adni egy $15$ méretű bemenet esetén a
+      számítási időre? (Feltételezzük, hogy az $n_0$ küszöbérték felett van.)
+    answer:
+      $0 \leq T(15) \leq 60$
+  - question: |
+      Egy algoritmus esetében tudjuk az időbonyolultságról, hogy $T(n) = \Omega(n^3)$, amelyhez ismerjük
+      a $c = 2$ konstanst. Milyen becslést tudunk adni egy $5$ méretű bemenet esetén a
+      számítási időre? (Feltételezzük, hogy az $n_0$ küszöbérték felett van.)
+    answer:
+      $250 \leq T(5)$
+  - question: |
+      Mennyi megoldása lehet egy lineáris kongruencia egyenletnek?
+    answer:
+      0 vagy végtelen sok.
+  - question: |
+      Mennyi megoldása lehet egy lineáris kongruencia egyenlet alaprendszerének?
+    answer:
+      0 vagy $d^{*}$.
+

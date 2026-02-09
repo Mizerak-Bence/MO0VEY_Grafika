@@ -1,0 +1,59 @@
+exercises:
+  - question: |
+      Számítási feladat (Catmull-Rom) \textit{(6 pont)}
+
+      \medskip
+
+      Adottak a síkon a $(1, 1), (1, 4), (5, 2), (9, 4), (9, 1)$ pontok.
+      \begin{itemize}
+        \item[(2)] Írja fel a Catmull-Rom spline érintőit ($\tau = 0.5$)!
+        \item[(1)] Ábrázolja a görbét és az érintőket!
+        \item[(3)] Írja fel a pontok alapján az egyenközű, a húrhosszal arányos és a centripetális paraméterezést!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Számítási feladat (Overhauser) \textit{(6 pont)}
+
+      \medskip
+
+      Adottak a síkon a $(2, 0), (4, 4), (6, 0), (8, 4)$ pontok, és a hozzájuk tartozó $0, 1, 2, 3$ paraméterértékek.
+      \begin{itemize}
+        \item[(3)] Írja fel az Overhauser spline-t!
+        \item[(1)] Ábrázolja a görbét (a Bessel-féle parabolákkal együtt)!
+        \item[(1)] Számítsa ki a pontbeli érintőket!
+        \item[(1)] Határozza meg a görbe pontját az $u=1.2$ paraméternél!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Számítási feladat (de Casteljau) \textit{(6 pont)}
+
+      \medskip
+
+      Adottak a síkon a $(1, 1), (3, 4), (7, 4), (9, 0)$ pontok.
+      \begin{itemize}
+        \item[(1)] Számítsa ki a Bézier görbe pontját de Casteljau algoritmussal a $t=0.25$ paraméternél!
+        \item[(1)] Ábrázolja a számítás lépéseit és a Bézier görbét!
+        \item[(1)] Írja fel a görbe pontbeli érintőjének az egyenletét az adott pontban!
+        \item[(1)] Írja fel a pontbeli normálvektort!
+        \item[(2)] Vágja ketté a görbét az adott paraméternél, és írja fel a kettévágással kapott görbék kontrollpontjait! Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Számítási feladat (Bézier) \textit{(6 pont)}
+
+      \medskip
+
+      Adottak a síkon a $(1, 1), (3, 4), (7, 4), (9, 0)$ pontok.
+      \begin{itemize}
+        \item[(1)] Számítsa ki a Bézier görbe pontját Bernstein polinomok segítségével a $t=0.25$ paraméternél!
+        \item[(1)] Ábrázolja a Bézier görbét!
+        \item[(1)] Ábrázolja a Bernstein polinomokat!
+        \item[(1)] Írja fel a görbe normálvektorait a kezdő és a végpontban!
+        \item[(2)] Növelje a görbe fokszámát! Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+

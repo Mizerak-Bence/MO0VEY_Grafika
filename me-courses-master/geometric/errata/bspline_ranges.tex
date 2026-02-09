@@ -1,0 +1,88 @@
+\documentclass[a4paper,12pt]{article}
+
+% Set margins
+\usepackage[hmargin=2.5cm, vmargin=2cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+% Graphic packages
+\usepackage{graphicx}
+
+% Colors
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+% Enumeration
+\usepackage{enumitem}
+
+% Links
+\usepackage{hyperref}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+	{\Large B-spline tartományok}
+\end{center}
+
+\vskip 5mm
+
+\section{Definíciók}
+
+Tegyük fel, hogy a B-spline alapfüggvényeket az alábbi formában definiáljuk:
+
+\begin{equation}\label{eq:base1}
+  N_i^1(u) = \begin{cases}
+	1, & \text{ha } u_i \leq u < u_{i+1}, \\
+	0, & \text{egyébként},
+\end{cases}
+\end{equation}
+
+\begin{equation}\label{eq:basek}
+N_i^k(u) =
+\dfrac{u - u_i}{u_{i+k-1} - u_i} N_i^{k-1}(u) +
+\dfrac{u_{i+k} - u}{u_{i+k} - u_{i+1}} N_{i+1}^{k-1}(u).
+\end{equation}
+
+\noindent A B-spline görbe definíciója:
+
+\begin{equation}\label{eq:curve}
+\textbf{s}(u) = \sum_{i=0}^n N_i^k(u) \textbf{d}_i.
+\end{equation}
+
+\noindent Észrevételek:
+\begin{itemize}
+	\item A szakirodalomban a $k$ helyett gyakran $p$-t használnak, illetve $k$ és $(k - 1)$ helyett inkább $p$ és $(p + 1)$ szerepel.
+	\item Az $i, k$ és $n$ tartományai szándékosan nem kerültek feltüntetésre, mert az a vizsgálat tárgya.
+\end{itemize}
+
+\section{Tartományok}
+
+Egyszerűen belátható, ellenőrízhető (\ref{eq:base1} és \ref{eq:basek} alapján), hogy \(N_i^k(u) \Rightarrow u \in [u_i, u_{i + k}).\) (Az \(u_{i + k}\) így felhasználásra kerül, csak az $u$ nem veszi fel már, mint értéket.)
+
+Tegyük fel, hogy adott $(n + 1)$ darab kontrollpontunk: \(\textbf{d}_0, \textbf{d}_1, \ldots \textbf{d}_n\). \Aref{eq:curve} és az előző megállapítás alapján $u \in [u_0, u_{n + k})$, mivel $0 \leq i \leq n$.
+
+Vizsgáljuk meg, hogy $k$ milyen értékeket vehet fel! Ehhez tekintsük az alábbi eseteket!
+\begin{itemize}
+\item $k = 1$: \Aref{eq:base1} alapján a legkisebb felvehető érték, tehát már tudunk vele számolni. Mivel az alapfüggvény szakaszonként konstans, ezért nem görbét kapunk.
+\item $k = 2$: Legkisebb felvehető értékként már használható. Egy kontrollpontot feltételezve ($n = 0$ esetén) az $\{u_0, u_1, u_2\}$ csomóértékek megadására van szükség.
+\item $k = n$: A görbe számításához az $u \in [u_0, u_{n+k})$ megadásához szükséges csomóértékekre van szükségünk. A kontrollpontok indexei alapján ezek adottak.
+\item $k = n + 1$: Az $N_n^{n+1}(u)$ eset vizsgálandó. Ehhez az $u_{n+k+1}$ csomóértékre is szükség lenne, amit viszont már nem tekintettünk adottnak.
+\end{itemize}
+
+Ezek alapján $(n + 1)$ kontrollpont esetén a $k$ értékét az $1 < k < n + 1$ tartományon adhatjuk meg.
+
+\vskip 15mm
+
+\noindent Miskolc, 2025. június 3.
+
+\end{document}

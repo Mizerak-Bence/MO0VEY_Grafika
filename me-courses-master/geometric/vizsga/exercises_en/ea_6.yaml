@@ -1,0 +1,74 @@
+exercises:
+  - question: |
+      Numerical exercise (Lagrange) \textit{(6 points)}
+
+      \medskip
+
+      Let given the points $(2, 0), (4, 4), (6, 0), (8, 4)$ on the plane, and the corresponding parameter values $1, 2, 3, 4$.
+      \begin{itemize}
+        \item[(2)] Let calculate the Lagrange interpolation curve!
+        \item[(1)] Let plot the curve!
+        \item[(1)] Let calculate and draw the tangent vectors at the interpolation points!
+        \item[(1)] Let calculate the point of the curve at the parameter $u = 2.5$!
+        \item[(1)] Let determine the normal vector at the given point!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Numerical exercise (Catmull-Rom) \textit{(6 points)}
+
+      \medskip
+
+      Let given the points $(1, 1), (1, 4), (5, 2), (9, 4), (9, 1)$ on the plane.
+      \begin{itemize}
+        \item[(2)] Let calculate the tangent vectors of the Catmull-Rom spline ($\tau = 0.5$)!
+        \item[(1)] Let plot the curve and the tangent vectors!
+        \item[(3)] Let determine the uniform, the cord length proportional, the centripetal parametrization!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Numerical exercise (Overhauser) \textit{(6 points)}
+
+      \medskip
+
+      Let given the points $(2, 0), (4, 4), (6, 0), (8, 4)$ on the plane, and the corresponding parameter values $0, 1, 2, 3$.
+      \begin{itemize}
+        \item[(3)] Let calculate the Overhauser spline!
+        \item[(1)] Let plot the spline (and the Bessel parabolas)!
+        \item[(1)] Let determine the tangent vectors at the parameter values!
+        \item[(1)] Let calculate the point of the curve at the parameter $u=1.2$!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Numerical exercise (de Casteljau) \textit{(6 points)}
+
+      \medskip
+
+      Let given the points $(1, 1), (3, 4), (7, 4), (9, 0)$ on the plane!
+      \begin{itemize}
+        \item[(1)] Let calculate the point of the Bézier curve at the parameter $t=0.25$ by using the de Casteljau algorithm!
+        \item[(1)] Let mention the steps of the calculations and plot the resulted curve!
+        \item[(1)] Let determine the equation of the tangent line at the given point!
+        \item[(1)] Let calculate the normal vector at the given point!
+        \item[(2)] Let split the curve at the given parameter! Write the control points of the resulted curves and illustrate the splitting process with a figure!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Numerical exercise (Bézier) \textit{(6 points)}
+
+      \medskip
+
+      Let given the points $(1, 1), (3, 4), (7, 4), (9, 0)$ on the plane!
+      \begin{itemize}
+        \item[(1)] Let calculate the point of the Bézier curve at the parameter $t=0.25$ by using the Bernstein polynomials!
+        \item[(1)] Let plot the Bézier curve!
+        \item[(1)] Let plot the used Bernstein polynomials!
+        \item[(1)] Let calculate the normal vector at the endpoints of the curve!
+        \item[(2)] Elevate the degree of the curve! Let draw a figure!
+      \end{itemize}
+    answer:
+      ...
+

@@ -1,0 +1,21 @@
+exercises:
+  - question: |
+      Lássa be, hogy a $T(n) = 3 \cdot \text{log}_{4}(x)$ függvény növekedési rendje $\mathcal{O}(\text{ln}x)$!
+    answer:
+      ANS
+  - question: |
+      Lássa be, hogy a $T(n) = 3 \cdot x^2$ függvény növekedési rendje $\mathcal{O}(2^x)$!
+    answer:
+      ANS
+  - question: |
+      Lássa be, hogy a $T(n) = 2^{n + 3}$ függvény növekedési rendje $\mathcal{O}(e^n)$!
+    answer:
+      ANS
+  - question: |
+      Lássa be, hogy a $T(n) = n^2 + 2$ függvény növekedési rendje $\mathcal{O}(n^3)$!
+    answer:
+      ANS
+  - question: |
+      Lássa be, hogy a $T(n) = (n + 1)(n + 5) - 4$ függvény növekedési rendje $\mathcal{O}(n^2)$!
+    answer:
+      ANS

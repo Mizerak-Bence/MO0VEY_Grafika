@@ -1,0 +1,39 @@
+exercises:
+  - question: |
+      Bézier görbe \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Definiálja a Bernstein polinomot!
+        \item[(1)] Írja fel a Bézier görbe paraméteres alakját Bernstein polinom segítségével!
+        \item[(2)] Soroljon fel a Bézier görbe tulajdonságai közül legalább 4-et!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier görbe \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Mutassa be a de Casteljau algoritmust!
+        \item[(1)] Készítsen ábrát!
+        \item[(2)] Soroljon fel a Bézier görbe tulajdonságai közül legalább 4-et!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier görbe \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Milyen kapcsolat van a de Casteljau algoritmus és a Bernstein polinomok között?
+      \item[(1)] Hogyan írható fel a Bézier görbe deriváltja?
+      \item[(1)] Definiálja a hodográf fogalmát!
+      \item[(1)] Mit jelent a hullámzáscsökkentő tulajdonság?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Bézier görbe \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Mutassa be a görbe kettévágásának módját egy $c \in \mathbb{R}$ paraméternél!
+      \item[(1)] Hogyan tudjuk egy Bézier görbének növelni a fokszámát?
+      \item[(2)] Mindkét módszert szemléltesse ábrával! 
+      \end{itemize}
+    answer:
+      ...
+

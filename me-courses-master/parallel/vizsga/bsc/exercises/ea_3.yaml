@@ -1,0 +1,53 @@
+exercises:
+  - question: |
+      Mutassa be a prefix számítás problémáját, és írja le a CREW PREFIX algoritmust!
+    answer:
+      ...
+  - question: |
+      Mutassa be a prefix számítás problémáját, és írja le az EREW PREFIX algoritmus pszeudó kódját!
+    answer:
+      ...
+  - question: |
+      Mutassa be a prefix számítás problémáját, és írja le az OPTIMAL PREFIX algoritmust!
+    answer:
+      ...
+  - question: |
+      Írja le a CREW PREFIX algoritmust, és mutassa be a működését egy 8 elemű példán!
+    answer:
+      ...
+  - question: |
+      Írja le az EREW PREFIX algoritmus pszeudó kódját, és mutassa be a működését egy 8 elemű példán!
+    answer:
+      ...
+  - question: |
+      Írja le az OPTIMAL PREFIX algoritmust, és mutassa be a működését egy 16 elemű példán!
+    answer:
+      ...
+  - question: |
+      Mutassa be a tömbök összefésülésének problémáját, és írja fel az algoritmus pszeudó kódját!
+    answer:
+      ...
+  - question: |
+      Mutassa be a tömbrangsorolás alapproblémáját, és adjon egy szekvenciális algoritmust a megoldására!
+    answer:
+      ...
+  - question: |
+      Mutassa be a tömbrangsorolás alapproblémáját, és adjon egy párhuzamos algoritmust a megoldására!
+    answer:
+      ...
+  - question: |
+      Mutassa be, hogy milyen problémát old meg, majd adja meg pszeudó kóddal \textit{Le Lann} algoritmusát!
+    answer:
+      ...
+  - question: |
+      Mutassa be, hogy milyen problémát old meg, majd adja meg pszeudó kóddal \textit{Chang-Roberts} algoritmusát!
+    answer:
+      ...
+  - question: |
+      Mutassa be, hogy milyen problémát old meg a \textit{Hirschberg-Sinclair} algoritmus, és vesse össze a \textit{Chang-Roberts} féle algoritmussal!
+    answer:
+      ...
+  - question: |
+      Mutassa be, hogy milyen problémát old meg, majd írja le szövegesen a \textit{Max-terjed} algoritmust!
+    answer:
+      ...

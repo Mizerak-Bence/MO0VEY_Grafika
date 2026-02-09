@@ -1,0 +1,454 @@
+\documentclass[a4paper,12pt]{article}
+
+% Set margins
+\usepackage[hmargin=2.5cm, vmargin=2cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+% Graphic packages
+\usepackage{graphicx}
+
+% Colors
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+% Enumeration
+\usepackage{enumitem}
+
+% Links
+\usepackage{hyperref}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\setcounter{section}{6}
+
+\section{Tétel}
+
+\subsection{Párhuzamos algoritmusok alapfogalmai}
+
+\begin{itemize}
+    \item Konkurrens és párhuzamos végrehajtás közötti különbség
+    \item Flynn-féle osztályozás: SISD, SIMD, MISD, MIMD
+\end{itemize}
+
+\noindent \textbf{Amdahl törvénye}
+
+\begin{itemize}
+    \item Gene Amdahl, 1967.
+    \item Azt mutatja meg, hogy egy program esetében a párhuzamosítható részek arányát ismerve ideális esetben mennyi lesz a gyorsítás (\textit{speedup}) értéke.
+    \item A probléma méretét rögzítettnek tekinti.
+    \item Egy felső becslésről van szó.
+\end{itemize}
+Legyen
+\begin{itemize}
+    \item $p$: a számítási egységek száma,
+    \item $f$: a program egészére nézve a párhuzamosítható részek aránya.
+\end{itemize}
+\[
+S_p = \dfrac{1}{(1 - f) + \dfrac{f}{p}}, \quad
+\lim_{p \rightarrow \infty} S_p = \dfrac{1}{1 - f}.
+\]
+
+\subsection{Hatékonysági mértékek}
+
+\begin{itemize}
+    \item $P$: a megoldandó probléma
+    \item $n$: a probléma mérete
+    \item $T_{\text{seq}}(n)$: számítási idő szekvenciális végrehajtás esetén
+    \item $T_{\text{par}}(p, n)$: számítási idő párhuzamos végrehajtás esetén $p$ darab PU-val.
+\end{itemize}
+
+\noindent \textbf{Költség} (Cost)
+\[
+C_p(n) = p \cdot T_{\text{par}}(p, n)
+\]
+
+\noindent \textbf{Munka} (Work)
+
+$W_p(n)$: Az összes PU-n elvégzett műveletek összege.
+
+\noindent \textbf{Gyorsítás} (Speed-Up)
+\[
+S_p(n) = \dfrac{T_{\text{seq}}(n)}{T_{\text{par}}(p, n)}
+\]
+
+Tétel: $p$-nél nagyobb gyorsítás nem érhető el!
+
+\noindent \textbf{Hatékonyság} (Efficiency)
+\[
+E_p(n) = \dfrac{S_p(n)}{p} = \dfrac{T_{\text{seq}}(n)}{p \cdot T_{\text{par}}(p, n)}
+\]
+
+\noindent \textbf{Munkahatékony algoritmus}
+
+Egy párhuzamos algoritmus a soros algoritmusra nézve munkahatékony, hogy ha létezik olyan $k$ érték, hogy
+\[
+\dfrac{p \cdot T_{\text{par}}(n, p)}{T_{\text{seq}}(n)} = \mathcal{O}(\text{lg}^k n).
+\]
+\begin{itemize}
+\item Egy párhuzamos algoritmus csak akkor munkahatékony, hogy ha legalább lineáris a gyorsítása.
+\item Egy munkahatékony párhuzamos algoritmus hatékonysága $\Theta(1)$.
+\end{itemize}
+
+\noindent \textbf{Munkaoptimális algoritmus}
+
+Egy párhuzamos algoritmus a soros algoritmusra nézve munkaoptimális, hogy ha
+\[
+\dfrac{p \cdot T_{\text{par}}(n, p)}{T_{\text{seq}}(n)} = \mathcal{O}(1).
+\]
+
+
+\subsection{Párhuzamos gépek}
+
+\begin{itemize}
+    \item PRAM (\textit{Parallel Random Access Machine})
+\item EREW, CREW, CRCW
+\end{itemize}
+
+\subsection{Prefixszámítás}
+
+Legyen adott egy $\Sigma$ alaphalmaz. Definiáljuk rajta a $\oplus$ bináris, asszociatív operátort. (A $\Sigma$-ról tudjuk, hogy zárt a műveletre nézve.)
+
+Tekintsünk egy $X = [x_1, x_2, \ldots, x_n]$ sorozatot.
+
+Az $x_1 \oplus \cdots \oplus x_k$ elemeket prefixeknek nevezzük. A számítás célja ezek meghatározása.
+
+\subsubsection*{CREW\_PREFIX algoritmus}
+
+CREW PRAM modellt használ. A problémát rekurzívan oldja meg.
+
+\begin{itemize}
+    \item Egy elem esetén az elem maga a prefix.
+    \item Több elem esetén a tömböt 2 részre osztja. Rekurzívan végrehajta rajta a prefix számítást, majd a tömb második felének minden eleméhez hozzáadja a tömb első felének utolsó elemét.
+\end{itemize}
+
+Az algoritmus időigénye a következőképpen számítható:
+\[
+T(n) = T\left(\dfrac{n}{2}\right) + \mathcal{O}(1), \quad T(1) = 1
+\quad \Rightarrow \quad
+T(n) = \mathcal{O}(\text{log}_2(n)).
+\]
+
+A CREW-PREFIX algoritmus nem munkaoptimális, mivel $\Theta(n \cdot \text{log}_2 n)$ munkát végez, míg van olyan szekvenciális algoritmus, amelynél ez $\mathcal{O}(n)$.
+
+\subsubsection*{EREW\_PREFIX algoritmus}
+
+EREW PRAM modellt használ.
+
+\begin{align*}
+&\text{EREW\_PREFIX}(@X, @Y) \\
+&\text{// Input}: X, n \text{ elemű sorozat.} \\
+&\text{// Output}: Y, n \text{ elemű sorozat.} \\
+&y_1 \leftarrow x_1 \\
+&\text{PARALLEL FOR } i \leftarrow 2 \text{ TO } n \text{ DO} \\
+&\quad y_i \leftarrow x_{i-1} \oplus x_i \\
+&k \leftarrow 2 \\
+&\text{WHILE } k < n \text{ DO} \\
+&\quad \text{PARALLEL FOR } i \leftarrow k + 1 \text{ TO } n \text{ DO} \\
+&\quad \quad y_i \leftarrow y_{i - k} \oplus y_i \\
+&\quad k \leftarrow 2 \cdot k \\
+&\text{RETURN}(Y) \\
+\end{align*}
+
+Az EREW-PREFIX algoritmus időigénye $n$ processzoron $\Theta(\text{log}_2(n))$.
+
+\subsubsection*{OPTIMAL\_PREFIX algoritmus}
+
+CREW PRAM számítási modell. Tegyük fel, hogy $p = \dfrac{n}{\text{log}_2(n)}$ processzort használunk.
+\begin{itemize}
+    \item Osszuk fel az $X$ bemeneti sorozatot $\dfrac{n}{\text{log}_2(n)}$ részre, és oldjuk meg rajtuk szekvenciálisan a prefix számítási problémát! Az eredmény kerüljön az $Y$ tömbbe!
+    \item Gyűjtsük ki a résztömbök utolsó elemeit egy $Z$ segédtömbbe!
+    \item A CREW\_PREFIX algoritmust hajtsuk végre a $Z$ tömbön, és az eredmény kerüljön egy $W$ tömbbe!
+    \item Az $\dfrac{n}{\text{log}_2(n)}$ részre bontott $Y$ tömb elemeihez adjuk hozzá a $W$ tömbben lévő megfelelő értéket! (A $j$-edik résztömb minden eleméhez a $w_{j-1}$ értéket, ahol $1 < j \leq \dfrac{n}{\text{log}_2(n)}$.)
+\end{itemize}
+
+Az algoritmus mindhárom lépése $\Theta(\text{log}(n))$ ideig tart, így a teljes számítás is $\Theta(\text{log}(n))$ időbonyolultságú.
+
+Az Optimális PREFIX számítás munkaoptimális.
+
+\subsection{Determinisztikus tömbrangsorolás}
+
+\begin{itemize}
+    \item Adott egy láncolt lista, amelynek az elemeit egy tömbben helyezzük el.
+    \item Minden elemnek tároljuk a következő elem tömbbeli indexét. (Az egyszerűség kedvéért tekintsünk el az adatrészről, és csak ezzel az indexszel/mutatóval foglalkozzunk.)
+    \item Az utolsó elem a 0-ra mutat.
+    \item A tömbrangsorolás során meg kell határozni minden elemre, hogy mennyi további elem követi a listában. (Az elem után lévő elem számát nevezzük itt rangnak.)
+\end{itemize}
+
+A problémára adható párhuzamos algoritmus a következő formában.
+\begin{itemize}
+    \item Állítsuk be minden olyan elemnek a rangját kezdetben 1-re, amelynek van következő eleme.
+    \item Az elemek rangját növeljük a következő elemük rangjával.
+    \item A következő elem indexét állítsuk át a következő elem rákövetkezőjének indexére.
+    \item Az így kapott indexszekkel folytassuk az algoritmust.
+\end{itemize}
+
+Látható, hogy a lépések minden elem esetében függetlenül végrehajthatók.
+
+\begin{align*}
+&\text{DET\_RANKING}(@A, @R)\\
+&\text{// Input}: A, \text{a következő elemek indexei a tömbben}\\
+&\text{// Output}: R, \text{az adott indexeken lévő elemek rangja}\\
+&\text{PARALLEL FOR }i \leftarrow 1 \text{ TO }n\text{ DO}\\
+&\quad \text{IF }a_i \neq 0\\
+&\quad\quad \text{THEN }r_i \leftarrow 1\\
+&\quad\quad \text{ELSE }r_i \leftarrow 0\\
+&\text{FOR }j \leftarrow 1 \text{ TO }\lceil \log_2 n \rceil\text{ DO}\\
+&\quad \text{PARALLEL FOR }i \leftarrow 1 \text{ TO }n\text{ DO}\\
+&\quad\quad \text{IF }a_i \neq 0\\
+&\quad\quad\quad \text{THEN }r_i \leftarrow r_i + r_{a_i}\\
+&\quad\quad\quad\quad\quad\quad a_i \leftarrow a_{a_i}\\
+&\text{RETURN}(R)\\
+\end{align*}
+
+\subsection{Összefésülés}
+
+\begin{align*}
+&\text{MERGE}(@A, p, q, r) \\
+&\text{// Input}: A, \text{sorozat} \\
+&//\quad\quad\quad\, p, q, r \in \mathrm{N}, p \leq q \leq r \\
+&\text{// Output}: A, \text{rendezett sorozat} \\
+&X \leftarrow \text{COPY}(A)\\
+&i \leftarrow 1, j \leftarrow q + 1, k \leftarrow 1\\
+&\text{WHILE }i \leq q\text{ AND }j \leq r\text{ DO}\\
+&\quad \text{IF }x_i \leq x_j\\
+&\quad\quad \text{THEN }a_k \leftarrow x_i\\
+&\quad\quad\quad\quad\quad i \leftarrow i + 1\\
+&\quad\quad \text{ELSE }a_k \leftarrow x_j\\
+&\quad\quad\quad\quad\quad j \leftarrow j + 1\\
+&\quad k \leftarrow k + 1\\
+&\text{WHILE }i \leq q\text{ DO}\\
+&\quad\quad\quad a_k \leftarrow x_i\\
+&\quad\quad\quad i \leftarrow i + 1\\
+&\quad\quad\quad k \leftarrow k + 1\\
+&\text{WHILE }j \leq r\text{ DO}\\
+&\quad\quad\quad a_k \leftarrow x_j\\
+&\quad\quad\quad j \leftarrow j + 1\\
+&\quad\quad\quad k \leftarrow k + 1\\
+&\text{RETURN}(A) \\
+\end{align*}
+
+\subsection{Kiválasztás}
+
+Adott $n$ darab kulcsunk, és meg szeretnénk határozni az $i$-edik legkisebb elemet ($1 \leq i \leq n$).
+
+A kiválasztás egy speciális esete a maximum érték meghatározása, vagyis amikor $i = n$.
+
+\textit{Tétel}: $n$ elem esetében $n^2$ számú processzor használatával egy PRAM CRCW gépen a kiválasztás konstans időben ($\Theta (1)$ lépésben) megoldható.
+
+Feltételezzük, hogy minden kulcs különböző értékű.
+\begin{itemize}
+    \item Legyen egy $Q \in \{0, 1\}^{n \times n}$ mátrix.
+    \item Az $n^2$ számú processzoron (párhuzamosan) határozzuk meg a $q_{ij} = x_i < x_j$ logikai értékeket.
+    \item Képezzünk soronként csoportokat: $G_1, \ldots, G_n$.
+    \item Minden $G_i$ csoporton belül a $Q$ értékeken \textit{vagy} műveletet végrehajtva kapunk $n$ darab logikai értéket.
+    \item Azon $x_i$ elem lesz a maximális érték, ahol a csoportokhoz tartozó logikai érték 0-ra adódik.
+\end{itemize}
+
+\subsection{Rendezés}
+
+\begin{align*}
+&\text{MERGE\_SORT}(@A, p, r) \\
+&\text{// Input}: A, \text{sorozat} \\
+&//\quad\quad\quad\, p, r \in \mathrm{N}, p \leq r \\
+&\text{// Output}: A, \text{rendezett sorozat} \\
+&\text{IF }p < r\\
+&\quad \text{THEN }q \leftarrow \left\lfloor\dfrac{p + r}{2}\right\rfloor\\
+&\quad\quad\quad\quad \text{MERGE\_SORT}(A, p, q)\\
+&\quad\quad\quad\quad \text{MERGE\_SORT}(A, q + 1, r)\\
+&\quad\quad\quad\quad \text{MERGE}(A, p, q, r)\\
+&\text{RETURN}(A) \\
+\end{align*}
+
+\pagebreak
+
+\section{Tétel}
+
+\subsection{Rácsok: csomagirányítás, üzenetszórás, prefixszámítás}
+
+Busz, gyűrű topológia, 2 és magasabb dimenziós rácsok
+\begin{itemize}
+    \item A rács csomópontjaiban vannak a számítási egységek.
+    \item Olyan címzést érdemes használunk, amely segíti a csomagok eljuttatását a céljuk felé.
+\end{itemize}
+
+\subsection{Hiperkocka}
+
+Ábra, csomópontok száma dimenzió függvényében, címzési mód, maximális távolság
+
+\subsection{Pillangó hálózat}
+
+Ábra, csomópontok száma, 8 elemű, 4 szintű példa, címzési mód
+
+\subsection{Hálózatok beágyazása}
+
+Egy hálózatnak egy másikra történő leképezését beágyazásnak (angolul \textit{embedding}) nevezzük.
+
+\subsection{Szinkronizált hálózat: vezetőválasztási algoritmusok}
+
+Adott egy $p$ számú csomópontból álló szinkronizált hálózat. Minden csomópont
+\begin{itemize}
+    \item egyedi azonosítóval rendelkezik,
+    \item van egy logikai értéke, amely jelzi, hogy vezető-e vagy sem,
+    \item üzenetet tud küldeni a hálózatban hozzá kapcsolódó csomópontoknak,
+    \item üzenetet tud fogadni.
+\end{itemize}
+A feladat az, hogy döntsük el, hogy ki legyen a hálózat vezetője úgy, hogy minden csomópont csak a szomszédos elemekkel tud kommunikálni.
+
+Vezetőnek választhatjuk például a legalacsonyabb vagy a legmagasabb azonosítójú processzort.
+
+A feladatban az optimalizálás célja lehet például:
+\begin{itemize}
+    \item a szükséges lépések száma,
+    \item a küldött üzenetek száma,
+    \item a küldött üzenetek mérete.
+\end{itemize}
+
+\subsubsection*{Le Lann algoritmus}
+
+\begin{itemize}
+    \item Feltételezzük, hogy egy egyirányú gyűrűben vagyunk.
+    \item A processzorok egy részét kezdő processzoroknak tekintjük. Ezek indexeit egy $K$ halmazban adjuk meg.
+    \item Nem feltételezzük, hogy a processzorok ismerik a hálózat méretét.
+\end{itemize}
+Jelölések:
+\begin{itemize}
+    \item $A \in \mathbb{N}^p$: a processzorok azonosítóit tartalmazó vektor
+    \item $S \in \{\text{TRUE}, \text{FALSE}, \text{NIL}\}^p$: a processzorok állapota (\textit{state}) arra vonatkozóan, hogy vezetők-e.
+    \item $C_i \subset \mathbb{N}, 1 \leq i \leq p$: processzorok indexeit tartalmazó halmazok (jelöltek, \textit{candidate})
+    \item SEND: üzenet küldése a gyűrűben következő processzornak
+    \item RECEIVE: üzenet fogadása az gyűrűben előző processzortól
+\end{itemize}
+
+\begin{align*}
+&\text{ELECT\_LELANN}(@A, @K, @l)\\
+&\text{// Input}: A \in \mathbb{N}^p,\text{ processzor azonosítók}\\
+&//\quad\quad\quad\, K \subset \mathbb{N},\text{ kezdő processzorok indexei}\\
+&\text{// Output}: l \in \mathbb{N},\text{ a vezető indexe}\\
+&\text{PARALLEL FOR }i \leftarrow 1\text{ TO }p\text{ DO}\\
+&\quad\text{IF }i \in K\\
+&\quad\quad\text{THEN }s_i \leftarrow \text{NIL}\\
+&\quad\quad\quad\quad\quad C_i \leftarrow \{a_i\}\\
+&\quad\quad\text{ELSE }s_i \leftarrow \text{FALSE}\\
+&\text{PARALLEL FOR }i \leftarrow 1\text{ TO }p\text{ DO}\\
+&\quad\text{IF }s_i = \text{NIL}\\
+&\quad\quad\text{THEN SEND}(a_i)\\
+&\quad\text{DO RECEIVE}(j)\\
+&\quad\quad\quad C_i \leftarrow C_i \cup \{j\}\\
+&\quad\quad\quad\text{IF }j \neq a_i\\
+&\quad\quad\quad\quad\text{THEN SEND}(j)\\
+&\quad\quad\quad\text{WHILE }j \neq a_i\\
+&\quad\text{IF }a_i = \min(C_i)\\
+&\quad\quad\text{THEN }s_i \leftarrow \text{TRUE}\\
+&\quad\quad\quad\quad\quad l \leftarrow i\\
+&\quad\quad\text{ELSE }s_i \leftarrow \text{FALSE}\\
+&\text{RETURN}(l)\\
+\end{align*}
+
+A vezető indexét az algoritmus futását követően minden processzor ismeri:
+\[
+l = \min(C_i)
+\]
+Komplexitás:
+\begin{itemize}
+    \item A szükséges lépések száma: $T(p) = \Theta(p)$.
+    \item A küldött (majd fogadott) üzenetek száma: $M(p) = \mathcal{O}(p^2)$.
+\end{itemize}
+
+Az algoritmus elvégzésekor a nem jelölt processzorok "beragadnak" az üzenet továbbítási állapotukba.
+
+\begin{itemize}
+    \item Ez kiküszöbölhető úgy, hogy ha a kiválasztott vezető körbeküld egy üzenetet, jelezve, hogy véget ért a vezetőválasztás.
+    \item A $T(p)$ és $M(p)$ komplexitásokra ez nincs hatással. (Mindkét függvény értéke természetesen nagyobb lesz.)
+\end{itemize}
+
+\subsubsection*{Chang-Roberts algoritmus}
+
+A LeLann algoritmus javítható azzal, hogy ha minden minden (kezdő) processzor csak a nála kisebb azonosítókat küldi tovább.
+
+A processzoroknak elegendő csak az aktuális vezető jelölt indexét tárolni, így ebben az esetben $C \in \mathbb{N}^p$.
+
+\begin{align*}
+&\text{ELECT\_CHANG\_ROBERTS}(@A, @K, @l)\\
+&\text{// Input}: A \in \mathbb{N}^p,\text{ processzor azonosítók}\\
+&//\quad\quad\quad\, K \subset \mathbb{N},\text{ kezdő processzorok indexei}\\
+&\text{// Output}: l \in \mathbb{N},\text{ a vezető indexe}\\
+&\text{PARALLEL FOR }i \leftarrow 1\text{ TO }p\text{ DO}\\
+&\quad\text{IF }i \in K\\
+&\quad\quad\text{THEN }s_i \leftarrow \text{NIL}\\
+&\quad\quad\quad\quad\quad c_i \leftarrow a_i\\
+&\quad\quad\text{ELSE }s_i \leftarrow \text{FALSE}\\
+&\text{PARALLEL FOR }i \leftarrow 1\text{ TO }p\text{ DO}\\
+&\quad\text{IF }s_i = \text{NIL}\\
+&\quad\quad\text{THEN SEND}(a_i)\\
+&\quad\text{DO RECEIVE}(j)\\
+&\quad\quad\quad\text{IF }j < c_i\\
+&\quad\quad\quad\quad\text{THEN }c_i \leftarrow j\\
+&\quad\quad\quad\quad\quad\quad\quad\text{SEND}(j)\\
+&\quad\quad\quad\text{WHILE }j \neq a_i\\
+&\quad\text{IF }c_i = a_i\\
+&\quad\quad\text{THEN }s_i \leftarrow \text{TRUE}\\
+&\quad\quad\quad\quad\quad l \leftarrow i\\
+&\quad\quad\text{ELSE }s_i \leftarrow \text{FALSE}\\
+&\text{RETURN}(l)\\
+\end{align*}
+
+Komplexitás:
+\begin{itemize}
+    \item A szükséges lépések száma: $T(p) = \Theta(p)$
+    \item A küldött (majd fogadott) üzenetek száma: $M(p) = \mathcal{O}(p^2)$
+    \item Átlagos esetben azonban: $M(p) = \mathcal{O}(p \log p)$
+\end{itemize}
+
+\subsubsection*{Hirschberg-Sinclair algoritmus}
+
+\begin{itemize}
+    \item Kétirányú gyűrűt feltételez.
+    \item Az üzenetszám minimalizálására törekszik.
+    \item Mindkét irányba egyszerre keresi a vezetőt.
+    \item Kettő hatvány szerint növelve $1, 2, 4, 8, \ldots$ távolságokra küld üzenetet.
+\end{itemize}
+Komplexitás:
+\begin{itemize}
+    \item A szükséges lépések száma: $T(p) = \Theta(p)$
+    \item A küldött (majd fogadott) üzenetek száma: $M(p) = \mathcal{O}(p \log p)$
+\end{itemize}
+
+\pagebreak
+
+\section{Tétel}
+
+\subsection{A párhuzamos algoritmusok elkészítésének és implementálásának technikái és problémái}
+
+\begin{itemize}
+    \item A számítási feladat felbontása
+    \item Szálak, folyamatok
+    \item Szinkronizálás
+    \item Adatmegosztás
+    \item Függvénykönyvtárak használata
+    \item Platformfüggő és platformfüggetlen megoldások
+    \item Hibakeresés
+\end{itemize}
+
+\subsection{A Multi-Pascal nyelv lehetőségeinek bemutatása néhány példán keresztül}
+
+\begin{itemize}
+    \item FORALL
+    \item Fork-Join
+    \item Mutex-ek használata
+    \item Barrier
+\end{itemize}
+
+\subsection{A PVM bemutatása a "hello" és a "forkjoin" mintaprogramok segítségével}
+
+\end{document}

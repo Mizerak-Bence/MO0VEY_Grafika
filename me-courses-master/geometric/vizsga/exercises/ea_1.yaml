@@ -1,0 +1,41 @@
+exercises:
+  - question: |
+      Kísérő triéder \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Ismertesse az $\textbf{r}(t), t \in [a, b]$ térgörbe kísérőtriéderét!
+        \item[(1)] Nevezze meg ennek vektorait, azok számítását,
+        \item[(1)] síkjait.
+        \item[(1)] Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Görbék tulajdonságai \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Sorolja fel a paraméteres térgörbék gyakran használt pontbeli tulajdonságait!
+        \item[(1)] Mit nevezünk ívhossznak, és hogyan számítható?
+        \item[(1)] Definiálja a görbületet!
+        \item[(1)] Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Görbék tulajdonságai \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Definiálja az érintőegyenest?
+        \item[(1)] Definiálja a görbületet!
+        \item[(1)] Definiálja a simulókört!
+        \item[(1)] Mindegyikhez készítsen ábrákat!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Görbék leírási módjai \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Mutassa be a sík- és térgörbék leírási módjait!
+        \item[(1)] Definiálja a ponthoz tartozó érintővektort és binormálist!
+        \item[(1)] Definiálja a simulókört!
+        \item[(1)] Mindegyikhez készítsen ábrákat!
+      \end{itemize}
+    answer:
+      ...

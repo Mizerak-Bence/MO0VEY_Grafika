@@ -1,0 +1,41 @@
+1
+generate_simple_homogeneous 5
+generate_scaling_transform 5
+generate_line_by_points 6
+generate_point_by_lines 6
+generate_rotation_transform 8
+generate_rotation_inverse_transform 8
+generate_mirror_transform 8
+generate_projection_transform 8
+
+2
+generate_rgb_to_cmy 5
+generate_cmy_to_rgb 5
+generate_rgb_to_hsv 8
+
+3
+generate_view_mapping 6
+generate_circle_line_area 5
+
+4
+generate_orthogonal_projection 6
+generate_projective_to_origin 6
+
+5
+generate_depth_buffer 5
+
+6
+generate_gourand 7
+generate_phong 7
+generate_ambient 6
+generate_diffuse 7
+generate_attenuation 7
+
+7
+generate_cylinder_mapping 6
+generate_sphere_mapping 6
+generate_texture_sampling 8
+
+8
+generate_animate_position 7
+generate_animate_angle 7

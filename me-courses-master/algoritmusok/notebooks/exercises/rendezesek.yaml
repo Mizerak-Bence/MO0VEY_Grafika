@@ -1,0 +1,85 @@
+exercises:
+  - question: |
+      Nyílt címzésű hasítótáblák esetében milyen intervallumon változhat az $\alpha$ kitöltési tényező értéke?
+    answer:
+      $0 \leq \alpha \leq 1$
+  - question: |
+      Egy nyílt címzésű hasítótáblában mi a teendő keresésnél és mi a teendő beszúrásnál, hogy ha törölt mezőt találunk?
+    answer:
+      Keresésnél tovább kell keresni az elemet a kipróbálási sorozat mentén. Beszúrásnál az adott helyre beszúrhatjuk az elemet.
+  - question: |
+      Dupla hasításnál milyen intervallumon változhat a $h_1(k)$ függvény értéke?
+    answer:
+      $1 \leq h_1(k) \leq m - 1$
+  - question: |
+      Milyen hasítótábla esetében lehet a kitöltési tényező nagyobb egynél?
+    answer:
+      Hogy ha vannak táblán kívüli elemek, például a láncolt listás hasítótábla esetében.
+  - question: |
+      Egy 800 elemű tömb minimumának a kiszámítása mennyi összehasonlítást tesz szükségessé?
+    answer:
+      799
+  - question: |
+      Mi a feltétele annak, hogy egy adatsornak alsó és felső mediánja is legyen?
+    answer:
+      Az adatsor elemeinek a számának párosnak kell lennie.
+  - question: |
+      Mennyi a legszélesebb border értéke a következő sztringnek? \texttt{FGDADGFGDA}
+    answer:
+      $b = 4$
+  - question: |
+      Sorolja fel a \texttt{FPGA} sztring valódi prefixeit!
+    answer:
+      $\varepsilon$, F, FP, FPG
+  - question: |
+      Sorolja fel a \texttt{FPGA} sztring valódi szuffixeit!
+    answer:
+      $\varepsilon$, A, GA, PGA
+  - question: |
+      Sorolja fel a \texttt{FPGA} sztring összes prefixét!
+    answer:
+      $\varepsilon$, F, FP, FPG, FPGA
+  - question: |
+      Sorolja fel a \texttt{FPGA} sztring összes szuffixét!
+    answer:
+      $\varepsilon$, A, GA, PGA, FPGA
+  - question: |
+      Mi lesz az \texttt{EKKEDD} sztring azon prefixe, amely nem valódi prefix?
+    answer:
+      \texttt{EKKEDD}
+  - question: |
+      Egy rendezés során a minimumkiválasztásos rendezés egy $A$ tömbre mennyi cserét fog végrehajtani?
+    answer:
+      $\text{Hossz}[A]-1$
+  - question: |
+      Előfordulhat-e, hogy a buborékrendezés algoritmusa egyetlen cserét sem hajt végre (egy nem üres tömb) rendezése során?
+      \begin{itemize}
+      \item Ha igen, akkor milyen esetben?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Igen. Abban az esetben, hogy ha a tömb már eleve rendezett.
+  - question: |
+      Össze lehet-e fésülni az alábbi sorozatokat?
+      \[
+        A = [1, 2, 9, 10], B = [3, 4]
+      \] 
+      \begin{itemize}
+      \item Ha igen, akkor mi lesz az összefésülés eredménye?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Igen, össze lehet. Az eredmény $[1, 2, 3, 4, 9, 10]$.
+  - question: |
+      Kommutatív művelet-e az összefésülés? Asszociatív-e?
+    answer:
+      Igen. Kommutatív és asszociatív művelet.
+  - question: |
+      Mit jelent a FELOSZT eljárásban visszaadott $q$ érték?
+    answer:
+      Az $x$ érték körüli felosztásnak a felső indexét. A két résztömb a $[p, q], [q+1, r]$ indextartományon lesz.
+  - question: |
+      Mi az értelmezési tartománya és az értékkészlete a hasítótábláknál használt hasítófüggvényeknek?
+    answer:
+      Az értelmezési tartomány a kulcsok halmaza, az értékkészlet a nemnegatív egész értékek halmaza.
+

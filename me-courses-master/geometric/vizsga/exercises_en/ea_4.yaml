@@ -1,0 +1,30 @@
+exercises:
+  - question: |
+      Parametric surfaces \textit{(4 points)}
+      \begin{itemize}
+      \item[(1)] How can we describe the surfaces (from mathematical standpoints)?
+      \item[(1)] What is the differential geometric definition of the surface?
+      \item[(2)] What are the commonly used point-wise properties of the surfaces?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Ruled surfaces \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] What are the ruled surfaces?
+        \item[(2)] Let mention the two, frequently used ways how can we obtain them!
+        \item[(1)] Let create figures!
+      \end{itemize}
+    answer:
+      ANS
+  - question: |
+      Swept surfaces \textit{(4 points)}
+      \begin{itemize}
+        \item[(1)] How can we obtain swepts surfaces?
+        \item[(1)] Let write its parametric form!
+        \item[(1)] Let draw figure!
+        \item[(1)] Mention some surfaces which can be created by using this method!
+      \end{itemize}
+    answer:
+      ANS
+

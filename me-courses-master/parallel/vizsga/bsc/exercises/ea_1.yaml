@@ -1,0 +1,245 @@
+exercises:
+  - question: |
+      Mi az a Flynn-féle osztályozás?
+    answer:
+      ...
+  - question: |
+      Mutassa be a PRAM CRCW modellt!
+    answer:
+      ...
+  - question: |
+      Mutassa be a PRAM CREW modellt!
+    answer:
+      ...
+  - question: |
+      Mutassa be a PRAM EREW modellt!
+    answer:
+      ...
+  - question: |
+      Definiálja a munka fogalmát (a megfelelő jelölésekkel)!
+    answer:
+      ...
+  - question: |
+      Definiálja a költség fogalmát (a megfelelő jelölésekkel)!
+    answer:
+      ...
+  - question: |
+      Definiálja a gyorsítás fogalmát (a megfelelő jelölésekkel)!
+    answer:
+      ...
+  - question: |
+      Definiálja a hatékonyság fogalmát (a megfelelő jelölésekkel)!
+    answer:
+      ...
+  - question: |
+      Milyen intervallumon változhat a gyorsítás értéke?
+    answer:
+      ...
+  - question: |
+      Mit jelent az, hogy ha egy párhuzamos program esetében a gyorsítás értéke 1-nél kisebb?
+    answer:
+      ...
+  - question: |
+      Mit jelent az, hogy ha a gyorsítás értéke pontosan 1?
+    answer:
+      ...
+  - question: |
+      Milyen intervallumon változhat a hatékonyság?
+    answer:
+      ...
+  - question: |
+      Mit jelent/jelez az, hogy ha a hatékonyság értéke 0 közeli?
+    answer:
+      ...
+  - question: |
+      Mit jelent/jelez az, hogy ha a hatékonyság értéke 1 közeli?
+    answer:
+      ...
+  - question: |
+      Milyen okai lehetnek annak, hogy ha a párhuzamosítással nem sikerül hatékonyabb végrehajtást elérni?
+    answer:
+      ...
+  - question: |
+      Miért fontos a gyorsítás mellett a hatékonysággal is foglalkozni?
+    answer:
+      ...
+  - question: |
+      Definiálja a $\mathcal{O}$ (nagy ordó) szimbólumot!
+    answer:
+      ...
+  - question: |
+      Definiálja a $\Theta$ ordó szimbólumot!
+    answer:
+      ...
+  - question: |
+      Definiálja a $\Omega$ ordó szimbólumot!
+    answer:
+      ...
+  - question: |
+      Definiálja a $\mathcal{o}$ (kis ordó) szimbólumot!
+    answer:
+      ...
+  - question: |
+      Definiálja a $\omega$ ordó szimbólumot!
+    answer:
+      ...
+  - question: |
+      Hogy ha tudjuk, hogy $T(n) = \Theta(f(n))$, akkor mit mondhatunk a többi ordó szimbólumra vonatkozóan?
+    answer:
+      ...
+  - question: |
+      Mit nevezünk szublineáris gyorsításnak?
+    answer:
+      ...
+  - question: |
+      Mit nevezünk lineáris gyorsításnak?
+    answer:
+      ...
+  - question: |
+      Mit nevezünk szuperlineáris gyorsításnak?
+    answer:
+      ...
+  - question: |
+      Mikor nevezünk egy párhuzamos algoritmust munkahatékonynak?
+    answer:
+      ...
+  - question: |
+      Mikor nevezünk egy párhuzamos algoritmust munkaoptimálisnak?
+    answer:
+      ...
+  - question: |
+      Mondja ki Brent tételét!
+    answer:
+      ...
+  - question: |
+      Mondja ki Amdahl törvényét!
+    answer:
+      ...
+  - question: |
+      Mondja ki a Gustafson-Barsis törvényt!
+    answer:
+      ...
+  - question: |
+      Mennyi a CREW PREFIX algoritmus időbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Mennyi az EREW PREFIX algoritmus időbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Mennyi az OPTIMAL PREFIX algoritmus időbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Definiálja a rendezés és a részben rendezés fogalmakat!
+    answer:
+      ...
+  - question: |
+      Milyen az időbonyolultsága a beszúró rendezésnek?
+    answer:
+      ...
+  - question: |
+      Milyen az időbonyolultsága a minimumkiválasztásos rendezésnek?
+    answer:
+      ...
+  - question: |
+      Mi tekinthető a minimumkiválasztásos rendezés esetében a legjobb bemenetnek (aminél a legkisebb lesz a futási idő)?
+    answer:
+      ...
+  - question: |
+      Mi tekinthető a beszúrásos rendezés esetében a legjobb bemenetnek (aminél a legkisebb lesz a futási idő)?
+    answer:
+      ...
+  - question: |
+      Mi tekinthető a minimumkiválasztásos rendezés esetében a legrosszabb bemenetnek (aminél a legnagyobb lesz a futási idő)?
+    answer:
+      ...
+  - question: |
+      Mi tekinthető a beszúrásos rendezés esetében a legrosszabb bemenetnek (aminél a legnagyobb lesz a futási idő)?
+    answer:
+      ...
+  - question: |
+      Mennyi a buborék rendezés időbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Mitől függ a leszámláló rendezés időbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Mitől függ a leszámláló rendezés tárbonyolultsága?
+    answer:
+      ...
+  - question: |
+      Mennyi munka szükséges két $n$ elemű vektor skaláris szorzatának kiszámításához, hogy ha az összeadást egységnyinek, a szorzást 2 egységnyinek tekintjük?
+    answer:
+      ...
+  - question: |
+      Mennyi a mátrix szorzás időbonyolultsága szekvenciális esetben?
+    answer:
+      ...
+  - question: |
+      Mennyi számítási munka szükséges két mátrix szorzatának meghatározásához?
+    answer:
+      ...
+  - question: |
+      Mennyi összeadás művelet végrehajtására van szükség két $k \times k$ méretű mátrix szorzása esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi szorzás művelet végrehajtására van szükség két $k \times k$ méretű mátrix szorzása esetében?
+    answer:
+      ...
+  - question: |
+      Mennyi egy sorozat minimumának számítására vonatkozóan az időbonyolultság párhuzamos esetben? (A lehető legjobb esetet feltételezve.)
+    answer:
+      ...
+  - question: |
+      Mennyi egy sorozat maximumának számítására vonatkozóan az időbonyolultság párhuzamos esetben PRAM CREW modellen? (A lehető legjobb esetet feltételezve.)
+    answer:
+      ...
+  - question: |
+      Mennyi egy sorozat maximumának számítására vonatkozóan az időbonyolultság párhuzamos esetben PRAM CRCW modellen? (A lehető legjobb esetet feltételezve.)
+    answer:
+      ...
+  - question: |
+      Írja le, hogy hogyan lehetséges PRAM CRCW modell esetében konstans idő alatt minimumot számolni!
+    answer:
+      ...
+  - question: |
+      Írja le, hogy hogyan lehetséges PRAM CRCW modell esetében konstans idő alatt maximumot számolni!
+    answer:
+      ...
+  - question: |
+      PRAM CRCW modell esetében mennyi processzor szükséges egy sorozat minimumának konstans idő alatt történő kiszámításához? (Definiálja a felhasznált jelöléseket!)
+    answer:
+      ...
+  - question: |
+      PRAM CRCW modell esetében mennyi processzor szükséges egy sorozat maximumának konstans idő alatt történő kiszámításához? (Definiálja a felhasznált jelöléseket!)
+    answer:
+      ...
+  - question: |
+      Milyen topológiát feltételez a \textit{Le Lann} algoritmus?
+    answer:
+      ...
+  - question: |
+      Milyen topológiát feltételez a \textit{Chang-Roberts} algoritmus?
+    answer:
+      ...
+  - question: |
+      Milyen topológiát feltételez a \textit{Hirschberg-Sinclair} algoritmus?
+    answer:
+      ...
+  - question: |
+      Milyen a bonyolultsága az üzenetszámra vonatkozóan a \textit{Le Lann} algoritmusnak?
+    answer:
+      ...
+  - question: |
+      Milyen a bonyolultsága az üzenetszámra vonatkozóan a \textit{Chang-Roberts} algoritmusnak?
+    answer:
+      ...
+  - question: |
+      Milyen a bonyolultsága az üzenetszámra vonatkozóan a \textit{Hirschberg-Sinclair} algoritmusnak?
+    answer:
+      ...

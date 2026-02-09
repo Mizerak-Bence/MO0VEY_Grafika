@@ -1,0 +1,126 @@
+exercises:
+  - question: |
+      Össze lehet-e fésülni az alábbi sorozatokat?
+      \[
+        A = [1, 2, 9, 10], B = [3, 4]
+      \] 
+      \begin{itemize}
+      \item Ha igen, akkor mi lesz az összefésülés eredménye?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Igen, össze lehet. Az eredmény $[1, 2, 3, 4, 9, 10]$.
+  - question: |
+      Össze lehet-e fésülni az alábbi sorozatokat?
+      \[
+        A = [1, 2, 9, 10], B = []
+      \] 
+      \begin{itemize}
+      \item Ha igen, akkor mi lesz az összefésülés eredménye?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Igen, össze lehet. Az eredmény $[1, 2, 9, 10]$.
+  - question: |
+      Össze lehet-e fésülni az alábbi sorozatokat?
+      \[
+        A = [1, 2, 9, 6], B = [3, 4]
+      \] 
+      \begin{itemize}
+      \item Ha igen, akkor mi lesz az összefésülés eredménye?
+      \item Ha nem, akkor miért nem?
+      \end{itemize}
+    answer:
+      Nem, mert az első sorozat nem rendezett.
+  - question: |
+      Kommutatív művelet-e az összefésülés? Asszociatív-e?
+    answer:
+      Igen. Kommutatív és asszociatív művelet.
+  - question: |
+      Milyen az összefésülés időbonyolultsága egy $n$ és $m$ hosszúságú sorozat esetén?
+    answer:
+      Lineáris idejű, $\mathcal{O}(n + m)$.
+  - question: |
+      Mit jelent a FELOSZT eljárásban visszaadott $q$ érték?
+    answer:
+      Az $x$ érték körüli felosztásnak a felső indexét. A két résztömb a $[p, q], [q+1, r]$ indextartományon lesz.
+  - question: |
+      Adott egy $Q$, sor adatstruktúra, tömbös reprezentációval a
+      \[
+          Q = [12, 9, 32, 44, 92, 15, 19, 81]
+      \]
+      formában. Tudjuk, hogy fej[$Q$] = 5, vége[$Q$] = 2. Mennyi elem szúrható még be a sorba?
+    answer:
+      2
+  - question: |
+      Adott egy $Q$, sor adatstruktúra, tömbös reprezentációval a
+      \[
+          Q = [12, 9, 32, 44, 92, 15, 19, 81]
+      \]
+      formában. Tudjuk, hogy fej[$Q$] = 5, vége[$Q$] = 2. Mennyi eleme van a sornak?
+    answer:
+      5
+  - question: |
+      Adott egy $Q$, sor adatstruktúra, tömbös reprezentációval a
+      \[
+          Q = [12, 9, 32, 44, 92, 15, 19, 81]
+      \]
+      formában. Tudjuk, hogy fej[$Q$] = 5, vége[$Q$] = 2. Mi a legelőször beszúrt elem kulcsa?
+    answer:
+      92
+  - question: |
+      Adott egy $Q$, sor adatstruktúra, tömbös reprezentációval a
+      \[
+          Q = [12, 9, 32, 44, 92, 15, 19, 81]
+      \]
+      formában. Tudjuk, hogy fej[$Q$] = 5, vége[$Q$] = 2. Mi a legutoljára beszúrt elem kulcsa?
+    answer:
+      12
+  - question: |
+      Adott egy $S$, verem adatstruktúra, tömbös reprezentációval a
+      \[
+          S = [8, 3, 2, 9, 1, 0, 0, 0]
+      \]
+      formában. Tudjuk, hogy tető[$S$] = 3. Mennyi elem van a veremben?
+    answer:
+      3
+  - question: |
+      Adott egy $S$, verem adatstruktúra, tömbös reprezentációval a
+      \[
+          S = [8, 3, 2, 0, 0, 0, 0, 0]
+      \]
+      formában. Tudjuk, hogy tető[$S$] = 6. Mennyi elem van a veremben?
+    answer:
+      6
+  - question: |
+      Adott egy $S$, verem adatstruktúra, tömbös reprezentációval a
+      \[
+          S = [8, 3, 2, 0, 0, 0, 0, 0]
+      \]
+      formában. Tudjuk, hogy tető[$S$] = 6. Mennyi elem szúrható még be a verembe?
+    answer:
+      2
+  - question: |
+      Hogy ha dupla pontosságú értékeket tárolunk egy egyszeresen láncolt listában, úgy, hogy
+      a mutatók 64 bitet foglalnak, akkor mennyi byte a tárigénye 100 elem tárolásának?
+    answer:
+      1200 byte
+  - question: |
+      Egy tömbben 60 byte-os rekordokat szeretnénk tárolni.
+      Mennyi eleme lehet maximum a tömbnek, hogy ha 11 KByte áll rendelkezésre?
+    answer:
+      187
+  - question: |
+      Milyen esetben érdemes az interpolációs keresést használni?
+    answer:
+      Hogy ha közel számtani sorozat szerint követik egymást a rendezendő értékek.
+  - question: |
+      Egy $Q$-val jelölt sor adatstruktúra esetében előfordulhat-e, hogy a fej[$Q$] mutató
+      értéke nagyobb, mint a vége[$Q$] értéke?
+    answer:
+      Igen.
+  - question: |
+      Mit jelent, hogy ha egy $Q$ sor adatstruktúra esetében fej[$Q$] = vége[$Q$]?
+    answer:
+      A sor üres.
+

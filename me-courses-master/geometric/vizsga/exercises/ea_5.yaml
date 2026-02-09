@@ -1,0 +1,62 @@
+exercises:
+  - question: |
+      Képformátumok \textit{(2 pont)}
+      \begin{itemize}
+      \item[(1)] Ismertesse az elterjedt képformátumokat (a rövidítéseket kiírva)!
+      \item[(1)] Szemléltesse ábrán, rendszerezve típusaik, jellemző használati módjuk szerint!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Szürkeárnyalatos leképzés \textit{(2 pont)}
+      \begin{itemize}
+      \item[(2)] Írja fel a jellegzetes szürkeárnyalat számítási módokat RGB színtérből!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Zaj típusok \textit{(2 pont)}
+      \begin{itemize}
+      \item[(2)] Soroljon fel legalább 4 zaj típust, és hogy mi okozhatja!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Hisztogram számítása \textit{(2 pont)}
+      \begin{itemize}
+      \item[(2)] Írja le (matematikai formulákkal és/vagy pszeudó kóddal) a szürkeárnyalatos képek hisztogramjának számítási módját!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Hisztogram műveletek \textit{(2 pont)}
+      \begin{itemize}
+        \item[(1)] Ismertesse a hisztogram széthúzás műveletét szürkeárnyalatos képek esetén!
+        \item[(1)] Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Lineáris konvolúció \textit{(2 pont)}
+      \begin{itemize}
+      \item[(2)] Mutassa be a kernel mátrix segítségével végrehajtható lineáris konvolúciós szűrő működését!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Gauss szűrő \textit{(2 pont)}
+      \begin{itemize}
+      \item[(1)] Ismertesse a Gauss szűrőt!
+      \item[(1)] Adjon példát konvolúciós kernelre!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Medián szűrő \textit{(2 pont)}
+      \begin{itemize}
+        \item[(1)] Ismertesse a medián szűrő működését!
+        \item[(1)] Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+

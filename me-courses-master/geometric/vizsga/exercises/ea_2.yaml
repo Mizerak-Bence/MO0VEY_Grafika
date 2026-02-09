@@ -1,0 +1,56 @@
+exercises:
+  - question: |
+      Interpoláció \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Mi az interpolációs (alap)feladat?
+      \item[(2)] Hogyan számítható a Lagrange interpoláció? (Interpolációs polinomok)
+      \item[(1)] Milyen előnyei és hátrányai vannak?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Hermite ívek \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Mit nevezünk Hermite ívnek?
+      \item[(1)] Mutassa be feltételekkel, ábrával!
+      \item[(1)] Hogyan számítható (mátrixos alakban)?
+      \item[(1)] Melyek a harmadfokú Hermite polinomok?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Spline-ok \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Melyek a spline-ok használatának az előnyei?
+      \item[(1)] Hogyan adhatunk meg spline-okat Hermite ívek segítségével?
+      \item[(1)] Mit nevezünk Bessel parabolának?
+      \item[(1)] Spline-ok esetében hogyan használhatjuk a Bessel parabolákat?
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Spline-ok \textit{(4 pont)}
+      \begin{itemize}
+      \item[(1)] Hogyan számolhatjuk az érintőket csak a szomszédos pontokat felhasználva?
+      \item[(1)] Mi az a Catmull-Rom spline? Hogyan számíthatjuk ki?
+      \item[(2)] Készítsen ábrákat az előzőekhez!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Overhauser spline \textit{(4 pont)}
+      \begin{itemize}
+        \item[(1)] Ismertesse az Overhauser spline-t!
+        \item[(2)] Írja fel a paraméteres alakját!
+        \item[(1)] Készítsen hozzá ábrát!
+      \end{itemize}
+    answer:
+      ...
+  - question: |
+      Görbék paraméterezése \textit{(4 pont)}
+      \begin{itemize}
+        \item[(4)] Mutassa be az interpolációs spline-ok paraméterezésének 4 tipikus esetét!
+      \end{itemize}
+    answer:
+      ...
+
