@@ -1,10 +1,8 @@
 # MO0VEY
 
-Ez a repó a Számítógépi grafika féléves beadandójához tartozik.
-
 Az ötlet egy kisebb, bejárható sci-fi kalibrációs tér: a játékos egy karaktert irányít egy zárt technikai környezetben, ahol különböző tárgyakat lehet mozgatni, körbejárni, megfigyelni, és közben a fő fényforrást is át lehet állítani. A cél nem egy általános „néhány modell egy üres térben” jellegű demo, hanem egy rövid, egységes hangulatú jelenet, aminek van témája és vizuális iránya.
 
-## Mit szeretnénk belőle
+## Mit szeretnék belőle
 A végső változat egy olyan bemutatható jelenet lenne, ahol:
 - be lehet járni a teret billentyűzettel és egérrel,
 - külső fájlból betöltött modellek jelennek meg textúrával,
@@ -20,11 +18,6 @@ Most az alapok már megvannak: modellbetöltés, textúrák, kamera, mozgatható
 - köd vagy más hangulati effekt,
 - átláthatóbb modulokra bontás a jelenlegi általánosabb kódszerkezet helyett.
 
-## Miért ilyen kevés fájl van a repóban
-Ide szándékosan csak az kerül fel, ami a projekthez tényleg kell: a forráskód, a szükséges headerek, a használt assetek, a Makefile és a leírások. A fordítás során előálló fájlok, a fölösleges kísérleti assetek és a külső környezethez tartozó dolgok nem részei a beadandónak.
-
-A `c_sdk_220203` mappa ettől még fontos, csak nem repótartalom. A tantárgyhoz ezt a környezetet kaptuk, erre épül a fordítás és a futtatás, tehát lokálisan szükséges, de maga a projekt nem ettől a mappától „lesz” beadandó.
-
 ## Fordítás Windows alatt
 1. A `c_sdk_220203` mappa legyen a repó mellett.
 2. Ha a textúratöltés a `libpng16-16.dll` hiányára panaszkodik, a DLL-t a `c_sdk_220203/MinGW/bin/` mappába kell bemásolni.
@@ -33,5 +26,3 @@ A `c_sdk_220203` mappa ettől még fontos, csak nem repótartalom. A tantárgyho
 ```bat
 ..\c_sdk_220203\MinGW\bin\mingw32-make.exe
 ```
-
-A részletesebb, technikai jellegű projektleírás a `Beadando/README.md` fájlban van.
