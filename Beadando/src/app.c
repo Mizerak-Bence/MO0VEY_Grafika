@@ -23,7 +23,7 @@ static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion);
 static void try_fix_working_directory(void);
 static void set_perspective_projection(double fovy_deg, double aspect, double near_plane, double far_plane);
 static void update_player(App* app, double dt);
-static void update_follow_camera(App* app, double dt);
+static void update_player_camera(App* app);
 
 void init_app(App* app, int width, int height)
 {
@@ -44,8 +44,8 @@ void init_app(App* app, int width, int height)
     app->move_left = false;
     app->move_right = false;
 
-    app->camera_follow_distance = 4.0f;
-    app->camera_follow_height = 1.8f;
+    app->camera_follow_distance = 0.12f;
+    app->camera_follow_height = 1.55f;
     app->camera_follow_smoothness = 14.0f;
 
     error_code = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
@@ -60,7 +60,7 @@ void init_app(App* app, int width, int height)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
     app->window = SDL_CreateWindow(
-        "Semester Project",
+        "MO0VEY - Calibration Chamber",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
@@ -88,7 +88,7 @@ void init_app(App* app, int width, int height)
     init_camera(&app->camera);
     init_scene(&app->scene);
 
-    update_follow_camera(app, 0.0);
+    update_player_camera(app);
 
     app->uptime = (double)SDL_GetTicks() / 1000.0;
     app->is_running = true;
@@ -119,6 +119,8 @@ static void try_fix_working_directory(void)
 
 void init_opengl(void)
 {
+    const GLfloat fog_color[4] = {0.08f, 0.08f, 0.12f, 1.0f};
+
     glShadeModel(GL_SMOOTH);
 
     glClearColor(0.08f, 0.08f, 0.12f, 1.0f);
@@ -130,6 +132,13 @@ void init_opengl(void)
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+    glFogfv(GL_FOG_COLOR, fog_color);
+    glFogf(GL_FOG_START, 4.5f);
+    glFogf(GL_FOG_END, 14.0f);
+    glHint(GL_FOG_HINT, GL_NICEST);
+    glEnable(GL_FOG);
 }
 
 void reshape(GLsizei width, GLsizei height)
@@ -211,7 +220,7 @@ void update_app(App* app)
     app->uptime = current_time;
 
     update_player(app, dt);
-    update_follow_camera(app, dt);
+    update_player_camera(app);
     update_scene(&app->scene, dt);
 }
 
@@ -379,6 +388,8 @@ static void handle_keyup(App* app, const SDL_KeyboardEvent* key)
 
 static void update_player(App* app, double dt)
 {
+    const float player_visual_yaw_offset = 0.0f;
+
     // Player is object #1 (ISAAC2) when present.
     if (app->scene.object_count <= 1) {
         return;
@@ -414,16 +425,21 @@ static void update_player(App* app, double dt)
     const double yaw = degree_to_radian(app->camera.rotation.z);
     const double side_yaw = degree_to_radian(app->camera.rotation.z - 90.0);
 
+    vec3 target_position = player->position;
+
     // Strafe (A/D)
-    player->position.x += (float)(cos(side_yaw) * app->player_speed.x * dt);
-    player->position.y += (float)(sin(side_yaw) * app->player_speed.x * dt);
+    target_position.x += (float)(cos(side_yaw) * app->player_speed.x * dt);
+    target_position.y += (float)(sin(side_yaw) * app->player_speed.x * dt);
 
     // Forward/back (W/S)
-    player->position.x += (float)(cos(yaw) * app->player_speed.y * dt);
-    player->position.y += (float)(sin(yaw) * app->player_speed.y * dt);
+    target_position.x += (float)(cos(yaw) * app->player_speed.y * dt);
+    target_position.y += (float)(sin(yaw) * app->player_speed.y * dt);
+
+    player->position = scene_resolve_player_position(player->position, target_position);
+    player->rotation.z = app->camera.rotation.z + player_visual_yaw_offset;
 }
 
-static void update_follow_camera(App* app, double dt)
+static void update_player_camera(App* app)
 {
     if (app->scene.object_count <= 0) {
         return;
@@ -433,32 +449,12 @@ static void update_follow_camera(App* app, double dt)
     const SceneObject* player = &app->scene.objects[player_index];
 
     const double yaw = degree_to_radian(app->camera.rotation.z);
-    const double pitch = degree_to_radian(app->camera.rotation.x);
+    const float forward_x = (float)cos(yaw);
+    const float forward_y = (float)sin(yaw);
 
-    const float forward_x = (float)(cos(yaw) * cos(pitch));
-    const float forward_y = (float)(sin(yaw) * cos(pitch));
-    const float forward_z = (float)(sin(pitch));
-
-    vec3 desired;
-    desired.x = player->position.x - forward_x * app->camera_follow_distance;
-    desired.y = player->position.y - forward_y * app->camera_follow_distance;
-    desired.z = player->position.z - forward_z * app->camera_follow_distance + app->camera_follow_height;
-
-    // Keep camera above the floor a bit (avoid going through ground when looking down).
-    const float min_z = player->position.z + 0.3f;
-    if (desired.z < min_z) {
-        desired.z = min_z;
-    }
-
-    if (dt <= 0.0) {
-        app->camera.position = desired;
-        return;
-    }
-
-    const float alpha = 1.0f - expf(-(float)app->camera_follow_smoothness * (float)dt);
-    app->camera.position.x += (desired.x - app->camera.position.x) * alpha;
-    app->camera.position.y += (desired.y - app->camera.position.y) * alpha;
-    app->camera.position.z += (desired.z - app->camera.position.z) * alpha;
+    app->camera.position.x = player->position.x + forward_x * app->camera_follow_distance;
+    app->camera.position.y = player->position.y + forward_y * app->camera_follow_distance;
+    app->camera.position.z = player->position.z + app->camera_follow_height;
 }
 
 static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion)

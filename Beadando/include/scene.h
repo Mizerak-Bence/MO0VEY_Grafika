@@ -10,6 +10,9 @@
 #include <stdbool.h>
 
 #define SCENE_MAX_OBJECTS 2
+#define SCENE_ROOM_HALF_WIDTH 6.0f
+#define SCENE_ROOM_HALF_DEPTH 6.0f
+#define SCENE_ROOM_HEIGHT 4.5f
 
 typedef struct SceneObject
 {
@@ -44,5 +47,7 @@ void scene_move_selected(Scene* scene, vec3 delta);
 
 void scene_move_light(Scene* scene, vec3 delta);
 void scene_adjust_light(Scene* scene, float delta);
+
+vec3 scene_resolve_player_position(vec3 previous_position, vec3 target_position);
 
 #endif /* SCENE_H */

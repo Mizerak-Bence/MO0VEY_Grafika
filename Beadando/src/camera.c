@@ -6,8 +6,8 @@
 
 void init_camera(Camera* camera)
 {
-    camera->position = (vec3){0.0f, -3.5f, 1.6f};
-    camera->rotation = (vec3){15.0f, 0.0f, 90.0f};
+    camera->position = (vec3){0.0f, 0.0f, 1.6f};
+    camera->rotation = (vec3){0.0f, 0.0f, 90.0f};
     camera->speed = (vec3){0.0f, 0.0f, 0.0f};
     camera->mouse_sensitivity = 0.25f;
 }
