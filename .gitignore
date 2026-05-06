@@ -1,0 +1,57 @@
+# Repository metadata backup
+.git_backup_20260506_sync/
+
+# External SDK and coursework
+c_sdk_220203/
+Gyakorlatok/
+
+# Runtime/build output and local downloads
+libpng16-16.dll
+assets/
+**/build/
+**/*.o
+**/*.a
+**/*.exe
+**/*.log
+
+# Editor
+.vscode/
+
+# Asset source/import and development helpers
+Beadando/assets/import/
+Beadando/tools/
+Beadando/assets/models/pyramid.obj
+Beadando/assets/textures/metal.png
+Beadando/assets/textures/vYVfLXNqUSM.jpg
+**/*.blend
+**/*.zip# Build artifacts
+**/build/
+**/*.o
+**/*.a
+**/*.exe
+
+# SDL / runtime logs
+**/*.log
+
+# Editor
+.vscode/
+
+# Assets packs (if you zip them)
+**/*.zip
+
+# Blender/source assets (keep runtime assets only)
+**/*.blend
+Beadando/assets/import/
+
+# Development-only helpers and unused local asset variants
+Beadando/tools/
+Beadando/assets/models/pyramid.obj
+Beadando/assets/textures/metal.png
+Beadando/assets/textures/vYVfLXNqUSM.jpg
+
+# Local SDK and unrelated coursework must stay out of the repo
+c_sdk_220203/
+Gyakorlatok/
+
+# Downloaded runtime DLLs should live in the SDK bin directory, not in the repo root
+libpng16-16.dll
