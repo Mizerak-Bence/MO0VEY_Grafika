@@ -1,13 +1,13 @@
 # Repository metadata backup
-.git_backup_20260506_sync/
+/.git_backup_20260506_sync/
 
 # External SDK and coursework
-c_sdk_220203/
-Gyakorlatok/
+/c_sdk_220203/
+/Gyakorlatok/
 
 # Runtime/build output and local downloads
-libpng16-16.dll
-assets/
+/libpng16-16.dll
+/assets/
 **/build/
 **/*.o
 **/*.a

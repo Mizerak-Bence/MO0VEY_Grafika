@@ -1,0 +1,100 @@
+# Textured cube (triangulated)
+# Coordinates: centered at origin, size 1
+
+o cube
+
+# vertices (24)
+v -0.5 -0.5 -0.5
+v  0.5 -0.5 -0.5
+v  0.5  0.5 -0.5
+v -0.5  0.5 -0.5
+
+v -0.5 -0.5  0.5
+v  0.5 -0.5  0.5
+v  0.5  0.5  0.5
+v -0.5  0.5  0.5
+
+# duplicate vertices per-face for correct UVs + normals
+v -0.5 -0.5 -0.5
+v  0.5 -0.5 -0.5
+v  0.5  0.5 -0.5
+v -0.5  0.5 -0.5
+
+v -0.5 -0.5  0.5
+v  0.5 -0.5  0.5
+v  0.5  0.5  0.5
+v -0.5  0.5  0.5
+
+v -0.5 -0.5 -0.5
+v -0.5  0.5 -0.5
+v -0.5  0.5  0.5
+v -0.5 -0.5  0.5
+
+v  0.5 -0.5 -0.5
+v  0.5  0.5 -0.5
+v  0.5  0.5  0.5
+v  0.5 -0.5  0.5
+
+# texcoords (24)
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+vt 0 0
+vt 1 0
+vt 1 1
+vt 0 1
+
+# normals
+vn 0 0 -1
+vn 0 0 1
+vn -1 0 0
+vn 1 0 0
+vn 0 -1 0
+vn 0 1 0
+
+# faces (12 triangles)
+# back (-Z): use v1-4, vt1-4, vn1
+f 1/1/1 2/2/1 3/3/1
+f 1/1/1 3/3/1 4/4/1
+
+# front (+Z): use v5-8, vt5-8, vn2
+f 5/5/2 7/7/2 6/6/2
+f 5/5/2 8/8/2 7/7/2
+
+# left (-X): use v17-20, vt17-20, vn3
+f 17/17/3 18/18/3 19/19/3
+f 17/17/3 19/19/3 20/20/3
+
+# right (+X): use v21-24, vt21-24, vn4
+f 21/21/4 23/23/4 22/22/4
+f 21/21/4 24/24/4 23/23/4
+
+# bottom (-Y): reuse v9-12 as bottom, vn5
+f 9/9/5 11/11/5 10/10/5
+f 9/9/5 12/12/5 11/11/5
+
+# top (+Y): reuse v13-16 as top, vn6
+f 13/13/6 14/14/6 15/15/6
+f 13/13/6 15/15/6 16/16/6
