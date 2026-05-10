@@ -24,7 +24,9 @@ typedef struct App
 
     double uptime;
 
-    bool show_help;
+    int pause_menu_selection;
+    bool pause_menu_show_instructions;
+    int pause_menu_instruction_scroll;
 
     Camera camera;
     Scene scene;

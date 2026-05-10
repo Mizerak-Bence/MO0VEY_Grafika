@@ -25,6 +25,8 @@ static void try_fix_working_directory(void);
 static void set_perspective_projection(double fovy_deg, double aspect, double near_plane, double far_plane);
 static void update_player(App* app, double dt);
 static void update_player_camera(App* app);
+static void reset_pause_menu(App* app);
+static void scroll_pause_instruction(App* app, int delta);
 
 void init_app(App* app, int width, int height)
 {
@@ -36,7 +38,9 @@ void init_app(App* app, int width, int height)
     app->gl_context = NULL;
     app->window_width = width;
     app->window_height = height;
-    app->show_help = true;
+    app->pause_menu_selection = 0;
+    app->pause_menu_show_instructions = false;
+    app->pause_menu_instruction_scroll = 0;
 
     app->player_speed = (vec3){0.0f, 0.0f, 0.0f};
     app->player_move_speed = 2.5f;
@@ -194,6 +198,11 @@ void handle_app_events(App* app)
         case SDL_MOUSEMOTION:
             handle_mouse_motion(app, &event.motion);
             break;
+        case SDL_MOUSEWHEEL:
+            if (app->is_paused && app->pause_menu_show_instructions && event.wheel.y != 0) {
+                scroll_pause_instruction(app, -event.wheel.y);
+            }
+            break;
         case SDL_WINDOWEVENT:
             if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
                 app->window_width = event.window.data1;
@@ -235,8 +244,13 @@ void render_app(App* app)
     glPopMatrix();
 
     ui_begin_overlay(app->window_width, app->window_height);
-    ui_draw_pause_menu(app->window_width, app->window_height, app->is_paused);
-    ui_draw_help(app->window_width, app->window_height, app->show_help);
+    ui_draw_pause_menu(
+        app->window_width,
+        app->window_height,
+        app->is_paused,
+        app->pause_menu_selection,
+        app->pause_menu_show_instructions,
+        app->pause_menu_instruction_scroll);
     ui_end_overlay();
 
     SDL_GL_SwapWindow(app->window);
@@ -264,6 +278,8 @@ void destroy_app(App* app)
 
 static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
 {
+    static const int pause_menu_item_count = 3;
+
     if (key->repeat) {
         return;
     }
@@ -271,10 +287,17 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
     switch (key->keysym.scancode) {
     case SDL_SCANCODE_ESCAPE:
         if (app->is_paused) {
-            app->is_running = false;
+            if (app->pause_menu_show_instructions) {
+                app->pause_menu_show_instructions = false;
+            }
+            else {
+                app->is_paused = false;
+                set_mouse_capture(app, true);
+            }
         }
         else {
             app->is_paused = true;
+            reset_pause_menu(app);
             app->move_forward = false;
             app->move_back = false;
             app->move_left = false;
@@ -286,33 +309,88 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
     case SDL_SCANCODE_RETURN:
     case SDL_SCANCODE_KP_ENTER:
         if (app->is_paused) {
-            app->is_paused = false;
-            set_mouse_capture(app, true);
+            if (app->pause_menu_show_instructions) {
+                app->pause_menu_show_instructions = false;
+            }
+            else {
+                switch (app->pause_menu_selection) {
+                case 0:
+                    app->is_paused = false;
+                    set_mouse_capture(app, true);
+                    break;
+                case 1:
+                    app->pause_menu_show_instructions = true;
+                    app->pause_menu_instruction_scroll = 0;
+                    break;
+                case 2:
+                    app->is_running = false;
+                    break;
+                default:
+                    break;
+                }
+            }
         }
-        break;
-    case SDL_SCANCODE_F1:
-        app->show_help = !app->show_help;
         break;
     default:
         break;
     }
 
     if (app->is_paused) {
+        if (app->pause_menu_show_instructions) {
+            switch (key->keysym.scancode) {
+            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_W:
+                scroll_pause_instruction(app, -1);
+                break;
+            case SDL_SCANCODE_DOWN:
+            case SDL_SCANCODE_S:
+                scroll_pause_instruction(app, 1);
+                break;
+            case SDL_SCANCODE_PAGEUP:
+                scroll_pause_instruction(app, -6);
+                break;
+            case SDL_SCANCODE_PAGEDOWN:
+                scroll_pause_instruction(app, 6);
+                break;
+            case SDL_SCANCODE_HOME:
+                app->pause_menu_instruction_scroll = 0;
+                break;
+            case SDL_SCANCODE_END:
+                app->pause_menu_instruction_scroll = ui_get_pause_instruction_max_scroll();
+                break;
+            default:
+                break;
+            }
+        }
+        else {
+            switch (key->keysym.scancode) {
+            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_W:
+                app->pause_menu_selection = (app->pause_menu_selection + pause_menu_item_count - 1) % pause_menu_item_count;
+                break;
+            case SDL_SCANCODE_DOWN:
+            case SDL_SCANCODE_S:
+                app->pause_menu_selection = (app->pause_menu_selection + 1) % pause_menu_item_count;
+                break;
+            default:
+                break;
+            }
+        }
         return;
     }
 
     switch (key->keysym.scancode) {
     // player movement
-    case SDL_SCANCODE_UP:
+    case SDL_SCANCODE_W:
         app->move_forward = true;
         break;
-    case SDL_SCANCODE_DOWN:
+    case SDL_SCANCODE_S:
         app->move_back = true;
         break;
-    case SDL_SCANCODE_LEFT:
+    case SDL_SCANCODE_A:
         app->move_left = true;
         break;
-    case SDL_SCANCODE_RIGHT:
+    case SDL_SCANCODE_D:
         app->move_right = true;
         break;
     case SDL_SCANCODE_Q:
@@ -403,16 +481,16 @@ static void handle_keyup(App* app, const SDL_KeyboardEvent* key)
     }
 
     switch (key->keysym.scancode) {
-    case SDL_SCANCODE_UP:
+    case SDL_SCANCODE_W:
         app->move_forward = false;
         break;
-    case SDL_SCANCODE_DOWN:
+    case SDL_SCANCODE_S:
         app->move_back = false;
         break;
-    case SDL_SCANCODE_LEFT:
+    case SDL_SCANCODE_A:
         app->move_left = false;
         break;
-    case SDL_SCANCODE_RIGHT:
+    case SDL_SCANCODE_D:
         app->move_right = false;
         break;
     default:
@@ -509,4 +587,26 @@ static void set_mouse_capture(App* app, bool enabled)
     if (SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE) != 0 && enabled) {
         printf("[WARN] Unable to enable relative mouse mode: %s\n", SDL_GetError());
     }
+}
+
+static void reset_pause_menu(App* app)
+{
+    app->pause_menu_selection = 0;
+    app->pause_menu_show_instructions = false;
+    app->pause_menu_instruction_scroll = 0;
+}
+
+static void scroll_pause_instruction(App* app, int delta)
+{
+    const int max_scroll = ui_get_pause_instruction_max_scroll();
+    int next_scroll = app->pause_menu_instruction_scroll + delta;
+
+    if (next_scroll < 0) {
+        next_scroll = 0;
+    }
+    if (next_scroll > max_scroll) {
+        next_scroll = max_scroll;
+    }
+
+    app->pause_menu_instruction_scroll = next_scroll;
 }
