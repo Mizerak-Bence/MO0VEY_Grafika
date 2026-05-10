@@ -79,8 +79,10 @@ void ui_draw_help(int width, int height, bool visible)
         "Esc: quit\n"
         "\n"
         "Player + camera:\n"
-        "  W/A/S/D: forward/left/back/right\n"
-        "  Mouse (hold LMB): look around from Isaac head\n"
+        "  Arrows: forward/left/back/right\n"
+        "  Mouse: look around from Isaac head (cursor locked)\n"
+        "  E: use nearby cleared-room door\n"
+        "  Q: fire projectile\n"
         "  Spawn: room edge midpoint\n"
         "\n"
         "Objects:\n"
@@ -90,7 +92,7 @@ void ui_draw_help(int width, int height, bool visible)
         "  R: toggle auto-rotate\n"
         "\n"
         "Light:\n"
-        "  Arrows: move X/Y\n"
+        "  T/F/G/H: move X/Y\n"
         "  PgUp/PgDn: move Z\n"
         "  +/-: intensity\n";
 
@@ -99,4 +101,28 @@ void ui_draw_help(int width, int height, bool visible)
     char hint[128];
     (void)snprintf(hint, sizeof(hint), "Viewport: %dx%d", width, height);
     ui_draw_text(10, 220, hint);
+}
+
+void ui_draw_pause_menu(int width, int height, bool visible)
+{
+    if (!visible) {
+        return;
+    }
+
+    const int panel_width = 320;
+    const int panel_height = 110;
+    const int x = (width - panel_width) / 2;
+    const int y = (height - panel_height) / 2;
+
+    glColor4f(0.0f, 0.0f, 0.0f, 0.78f);
+    glBegin(GL_QUADS);
+    glVertex2i(x, y);
+    glVertex2i(x + panel_width, y);
+    glVertex2i(x + panel_width, y + panel_height);
+    glVertex2i(x, y + panel_height);
+    glEnd();
+
+    ui_draw_text(x + 28, y + 28, "PAUSED");
+    ui_draw_text(x + 28, y + 56, "Enter: continue");
+    ui_draw_text(x + 28, y + 78, "Esc: exit game");
 }

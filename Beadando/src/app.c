@@ -20,6 +20,7 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key);
 static void handle_keyup(App* app, const SDL_KeyboardEvent* key);
 static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion);
 
+static void set_mouse_capture(App* app, bool enabled);
 static void try_fix_working_directory(void);
 static void set_perspective_projection(double fovy_deg, double aspect, double near_plane, double far_plane);
 static void update_player(App* app, double dt);
@@ -30,6 +31,7 @@ void init_app(App* app, int width, int height)
     int error_code;
 
     app->is_running = false;
+    app->is_paused = false;
     app->window = NULL;
     app->gl_context = NULL;
     app->window_width = width;
@@ -44,8 +46,8 @@ void init_app(App* app, int width, int height)
     app->move_left = false;
     app->move_right = false;
 
-    app->camera_follow_distance = 0.12f;
-    app->camera_follow_height = 1.55f;
+    app->camera_follow_distance = 0.0f;
+    app->camera_follow_height = 1.45f;
     app->camera_follow_smoothness = 14.0f;
 
     error_code = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
@@ -79,6 +81,8 @@ void init_app(App* app, int width, int height)
         printf("[ERROR] Unable to create the OpenGL context: %s\n", SDL_GetError());
         return;
     }
+
+    set_mouse_capture(app, true);
 
     SDL_GL_SetSwapInterval(1);
 
@@ -119,8 +123,6 @@ static void try_fix_working_directory(void)
 
 void init_opengl(void)
 {
-    const GLfloat fog_color[4] = {0.08f, 0.08f, 0.12f, 1.0f};
-
     glShadeModel(GL_SMOOTH);
 
     glClearColor(0.08f, 0.08f, 0.12f, 1.0f);
@@ -133,12 +135,7 @@ void init_opengl(void)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogfv(GL_FOG_COLOR, fog_color);
-    glFogf(GL_FOG_START, 4.5f);
-    glFogf(GL_FOG_END, 14.0f);
-    glHint(GL_FOG_HINT, GL_NICEST);
-    glEnable(GL_FOG);
+    glDisable(GL_FOG);
 }
 
 void reshape(GLsizei width, GLsizei height)
@@ -219,6 +216,10 @@ void update_app(App* app)
     double dt = current_time - app->uptime;
     app->uptime = current_time;
 
+    if (app->is_paused) {
+        return;
+    }
+
     update_player(app, dt);
     update_player_camera(app);
     update_scene(&app->scene, dt);
@@ -234,6 +235,7 @@ void render_app(App* app)
     glPopMatrix();
 
     ui_begin_overlay(app->window_width, app->window_height);
+    ui_draw_pause_menu(app->window_width, app->window_height, app->is_paused);
     ui_draw_help(app->window_width, app->window_height, app->show_help);
     ui_end_overlay();
 
@@ -243,6 +245,8 @@ void render_app(App* app)
 void destroy_app(App* app)
 {
     destroy_scene(&app->scene);
+
+    set_mouse_capture(app, false);
 
     if (app->gl_context != NULL) {
         SDL_GL_DeleteContext(app->gl_context);
@@ -266,28 +270,58 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
 
     switch (key->keysym.scancode) {
     case SDL_SCANCODE_ESCAPE:
-        app->is_running = false;
+        if (app->is_paused) {
+            app->is_running = false;
+        }
+        else {
+            app->is_paused = true;
+            app->move_forward = false;
+            app->move_back = false;
+            app->move_left = false;
+            app->move_right = false;
+            app->player_speed = (vec3){0.0f, 0.0f, 0.0f};
+            set_mouse_capture(app, false);
+        }
+        break;
+    case SDL_SCANCODE_RETURN:
+    case SDL_SCANCODE_KP_ENTER:
+        if (app->is_paused) {
+            app->is_paused = false;
+            set_mouse_capture(app, true);
+        }
         break;
     case SDL_SCANCODE_F1:
         app->show_help = !app->show_help;
         break;
+    default:
+        break;
+    }
 
-    // camera movement
-    case SDL_SCANCODE_W:
+    if (app->is_paused) {
+        return;
+    }
+
+    switch (key->keysym.scancode) {
+    // player movement
+    case SDL_SCANCODE_UP:
         app->move_forward = true;
         break;
-    case SDL_SCANCODE_S:
+    case SDL_SCANCODE_DOWN:
         app->move_back = true;
         break;
-    case SDL_SCANCODE_A:
+    case SDL_SCANCODE_LEFT:
         app->move_left = true;
         break;
-    case SDL_SCANCODE_D:
+    case SDL_SCANCODE_RIGHT:
         app->move_right = true;
         break;
     case SDL_SCANCODE_Q:
+        scene_fire_projectile(&app->scene, app->camera.rotation.z);
         break;
     case SDL_SCANCODE_E:
+        if (scene_use_nearby_door(&app->scene)) {
+            update_player_camera(app);
+        }
         break;
 
     // object selection
@@ -328,16 +362,16 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
         break;
 
     // light movement
-    case SDL_SCANCODE_UP:
+    case SDL_SCANCODE_T:
         scene_move_light(&app->scene, (vec3){0.0f, 0.2f, 0.0f});
         break;
-    case SDL_SCANCODE_DOWN:
+    case SDL_SCANCODE_G:
         scene_move_light(&app->scene, (vec3){0.0f, -0.2f, 0.0f});
         break;
-    case SDL_SCANCODE_LEFT:
+    case SDL_SCANCODE_F:
         scene_move_light(&app->scene, (vec3){-0.2f, 0.0f, 0.0f});
         break;
-    case SDL_SCANCODE_RIGHT:
+    case SDL_SCANCODE_H:
         scene_move_light(&app->scene, (vec3){0.2f, 0.0f, 0.0f});
         break;
     case SDL_SCANCODE_PAGEUP:
@@ -369,16 +403,16 @@ static void handle_keyup(App* app, const SDL_KeyboardEvent* key)
     }
 
     switch (key->keysym.scancode) {
-    case SDL_SCANCODE_W:
+    case SDL_SCANCODE_UP:
         app->move_forward = false;
         break;
-    case SDL_SCANCODE_S:
+    case SDL_SCANCODE_DOWN:
         app->move_back = false;
         break;
-    case SDL_SCANCODE_A:
+    case SDL_SCANCODE_LEFT:
         app->move_left = false;
         break;
-    case SDL_SCANCODE_D:
+    case SDL_SCANCODE_RIGHT:
         app->move_right = false;
         break;
     default:
@@ -388,8 +422,6 @@ static void handle_keyup(App* app, const SDL_KeyboardEvent* key)
 
 static void update_player(App* app, double dt)
 {
-    const float player_visual_yaw_offset = 0.0f;
-
     // Player is object #1 (ISAAC2) when present.
     if (app->scene.object_count <= 1) {
         return;
@@ -435,8 +467,7 @@ static void update_player(App* app, double dt)
     target_position.x += (float)(cos(yaw) * app->player_speed.y * dt);
     target_position.y += (float)(sin(yaw) * app->player_speed.y * dt);
 
-    player->position = scene_resolve_player_position(player->position, target_position);
-    player->rotation.z = app->camera.rotation.z + player_visual_yaw_offset;
+    player->position = scene_resolve_player_position(&app->scene, player->position, target_position);
 }
 
 static void update_player_camera(App* app)
@@ -459,12 +490,23 @@ static void update_player_camera(App* app)
 
 static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion)
 {
-    const Uint32 buttons = SDL_GetMouseState(NULL, NULL);
-    const bool left_down = (buttons & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0;
-
-    if (!left_down) {
+    if (app->is_paused) {
         return;
     }
 
     rotate_camera(&app->camera, (double)-motion->xrel, (double)-motion->yrel);
+}
+
+static void set_mouse_capture(App* app, bool enabled)
+{
+    if (app->window == NULL) {
+        return;
+    }
+
+    SDL_SetWindowGrab(app->window, enabled ? SDL_TRUE : SDL_FALSE);
+    SDL_ShowCursor(enabled ? SDL_DISABLE : SDL_ENABLE);
+
+    if (SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE) != 0 && enabled) {
+        printf("[WARN] Unable to enable relative mouse mode: %s\n", SDL_GetError());
+    }
 }

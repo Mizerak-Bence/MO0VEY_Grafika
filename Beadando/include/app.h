@@ -17,6 +17,7 @@ typedef struct App
     SDL_Window* window;
     SDL_GLContext gl_context;
     bool is_running;
+    bool is_paused;
 
     int window_width;
     int window_height;

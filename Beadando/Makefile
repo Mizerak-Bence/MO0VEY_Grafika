@@ -4,22 +4,44 @@
 
 APP_NAME := beadando
 BUILD_DIR := build
-BIN := $(BUILD_DIR)/$(APP_NAME).exe
+EXE_EXT :=
+BIN = $(APP_NAME)$(EXE_EXT)
 
 SDK_DIR := ../c_sdk_220203/MinGW
 
 CC := gcc
+RUN_BIN = ./$(BIN)
 
 ifeq ($(OS),Windows_NT)
+EXE_EXT := .exe
 SDK_BIN := $(abspath $(SDK_DIR))/bin
 # Ensure gcc's helper executables can find their dependent DLLs.
 export PATH := $(SDK_BIN);$(PATH)
 CC := $(SDK_DIR)/bin/gcc
+RUN_BIN = $(BIN)
 
 # cmd.exe is happier with backslashes and relative paths for builtins like copy
 SDK_BIN_WIN := $(subst /,\,$(SDK_DIR))\bin
 BUILD_DIR_WIN := $(subst /,\,$(BUILD_DIR))
+BIN_WIN := $(subst /,\,$(BIN))
+
+define COPY_RUNTIME_DLLS
+	copy /Y "$(SDK_BIN_WIN)\\SDL2.dll" "SDL2.dll"
+	copy /Y "$(SDK_BIN_WIN)\\SDL2_image.dll" "SDL2_image.dll"
+	if exist "$(SDK_BIN_WIN)\\libpng16-16.dll" copy /Y "$(SDK_BIN_WIN)\\libpng16-16.dll" "libpng16-16.dll"
+	if exist "$(SDK_BIN_WIN)\\zlib1.dll" copy /Y "$(SDK_BIN_WIN)\\zlib1.dll" "zlib1.dll"
+	if exist "$(SDK_BIN_WIN)\\libjpeg-9.dll" copy /Y "$(SDK_BIN_WIN)\\libjpeg-9.dll" "libjpeg-9.dll"
+endef
+
+define DELETE_FILE
+	if exist "$(1)" del /q "$(1)"
+endef
+else
+define DELETE_FILE
+	rm -f "$(1)"
+endef
 endif
+
 CFLAGS := -std=c11 -O2 -Wall -Wextra -Wpedantic \
 	-Iinclude -Ilib/obj/include -I$(SDK_DIR)/include
 
@@ -68,18 +90,22 @@ $(BIN): $(APP_OBJS) $(OBJ_OBJS)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) $(LDLIBS) -o $@
 
 ifeq ($(OS),Windows_NT)
-	copy /Y "$(SDK_BIN_WIN)\\SDL2.dll" "$(BUILD_DIR_WIN)\\SDL2.dll"
-	copy /Y "$(SDK_BIN_WIN)\\SDL2_image.dll" "$(BUILD_DIR_WIN)\\SDL2_image.dll"
-	if exist "$(SDK_BIN_WIN)\\libpng16-16.dll" copy /Y "$(SDK_BIN_WIN)\\libpng16-16.dll" "$(BUILD_DIR_WIN)\\libpng16-16.dll"
-	if exist "$(SDK_BIN_WIN)\\zlib1.dll" copy /Y "$(SDK_BIN_WIN)\\zlib1.dll" "$(BUILD_DIR_WIN)\\zlib1.dll"
-	if exist "$(SDK_BIN_WIN)\\libjpeg-9.dll" copy /Y "$(SDK_BIN_WIN)\\libjpeg-9.dll" "$(BUILD_DIR_WIN)\\libjpeg-9.dll"
+	$(COPY_RUNTIME_DLLS)
 endif
 
 run: $(BIN)
-	$(BIN)
+	$(RUN_BIN)
 
 clean:
 	$(RMDIR_BUILD)
+	$(call DELETE_FILE,$(BIN))
+	$(call DELETE_FILE,SDL2.dll)
+	$(call DELETE_FILE,SDL2_image.dll)
+	$(call DELETE_FILE,libpng16-16.dll)
+	$(call DELETE_FILE,zlib1.dll)
+	$(call DELETE_FILE,libjpeg-9.dll)
+
+rebuild: clean all
 
 # A simple linux target (requires system SDL2 + SDL2_image)
 linux:
@@ -89,4 +115,4 @@ linux:
 		-lSDL2 -lSDL2_image -lGL -lm \
 		-o $(APP_NAME)
 
-.PHONY: all clean run linux
+.PHONY: all clean rebuild run linux

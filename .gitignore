@@ -7,6 +7,7 @@
 
 # Runtime/build output and local downloads
 /libpng16-16.dll
+Beadando/*.dll
 /assets/
 **/build/
 **/*.o

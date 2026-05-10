@@ -29,11 +29,44 @@ void update_camera(Camera* camera, double dt)
 
 void set_view(const Camera* camera)
 {
+    const float yaw = (float)degree_to_radian(camera->rotation.z);
+    const float pitch = (float)degree_to_radian(camera->rotation.x);
+
+    const vec3 forward = {
+        cosf(yaw) * cosf(pitch),
+        sinf(yaw) * cosf(pitch),
+        sinf(pitch)
+    };
+    const vec3 right_unnormalized = {
+        forward.y,
+        -forward.x,
+        0.0f
+    };
+    const float right_length = sqrtf(
+        right_unnormalized.x * right_unnormalized.x +
+        right_unnormalized.y * right_unnormalized.y +
+        right_unnormalized.z * right_unnormalized.z);
+    const vec3 right = {
+        right_unnormalized.x / right_length,
+        right_unnormalized.y / right_length,
+        right_unnormalized.z / right_length
+    };
+    const vec3 up = {
+        right.y * forward.z - right.z * forward.y,
+        right.z * forward.x - right.x * forward.z,
+        right.x * forward.y - right.y * forward.x
+    };
+    const GLfloat view_matrix[16] = {
+        right.x, up.x, -forward.x, 0.0f,
+        right.y, up.y, -forward.y, 0.0f,
+        right.z, up.z, -forward.z, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glRotatef(-camera->rotation.x, 1.0f, 0.0f, 0.0f);
-    glRotatef(-camera->rotation.z, 0.0f, 0.0f, 1.0f);
+    glMultMatrixf(view_matrix);
     glTranslatef(-camera->position.x, -camera->position.y, -camera->position.z);
 }
 
