@@ -14,17 +14,21 @@
 
 #include <GL/gl.h>
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
 static void ui_draw_panel(int x, int y, int width, int height, float fill_alpha);
 static void ui_draw_menu_button(int x, int y, int width, int height, const char* label, bool selected);
+static void ui_draw_minimap_room(int x, int y, int size, bool current_room, bool cleared_room, bool enemy_alive);
+static void ui_draw_minimap_player_marker(int center_x, int center_y, int room_size, float camera_yaw_degrees);
 
 static const char* pause_instruction_lines[] = {
     "Jatek",
     "",
     "  W/A/S/D   mozgas",
     "  Mouse     kamera forgatas Isaac fejebol",
+    "  Mini-map  jobb felul mutatja a szobakat",
     "  Q         lovedek kilovese",
     "  E         ajto hasznalata, ha a szoba tiszta",
     "  Esc       pause menu / vissza",
@@ -104,6 +108,145 @@ int ui_get_pause_instruction_max_scroll(void)
     const int max_scroll = line_count - UI_PAUSE_INSTRUCTION_VISIBLE_LINES;
 
     return (max_scroll > 0) ? max_scroll : 0;
+}
+
+static void ui_draw_minimap_room(int x, int y, int size, bool current_room, bool cleared_room, bool enemy_alive)
+{
+    if (current_room) {
+        glColor4f(0.92f, 0.78f, 0.34f, 0.98f);
+    }
+    else if (cleared_room) {
+        glColor4f(0.52f, 0.54f, 0.60f, 0.92f);
+    }
+    else {
+        glColor4f(0.28f, 0.30f, 0.34f, 0.90f);
+    }
+
+    glBegin(GL_QUADS);
+    glVertex2i(x, y);
+    glVertex2i(x + size, y);
+    glVertex2i(x + size, y + size);
+    glVertex2i(x, y + size);
+    glEnd();
+
+    if (current_room) {
+        glColor4f(1.0f, 0.98f, 0.86f, 1.0f);
+    }
+    else {
+        glColor4f(0.18f, 0.18f, 0.20f, 1.0f);
+    }
+
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(x, y);
+    glVertex2i(x + size, y);
+    glVertex2i(x + size, y + size);
+    glVertex2i(x, y + size);
+    glEnd();
+
+    if (enemy_alive) {
+        const int marker_size = 5;
+        const int marker_x = x + size - marker_size - 3;
+        const int marker_y = y + 3;
+
+        glColor4f(0.80f, 0.18f, 0.16f, 1.0f);
+        glBegin(GL_QUADS);
+        glVertex2i(marker_x, marker_y);
+        glVertex2i(marker_x + marker_size, marker_y);
+        glVertex2i(marker_x + marker_size, marker_y + marker_size);
+        glVertex2i(marker_x, marker_y + marker_size);
+        glEnd();
+    }
+}
+
+static void ui_draw_minimap_player_marker(int center_x, int center_y, int room_size, float camera_yaw_degrees)
+{
+    const float yaw = degree_to_radian(camera_yaw_degrees);
+    const float dir_x = cosf(yaw);
+    const float dir_y = -sinf(yaw);
+    const float right_x = -dir_y;
+    const float right_y = dir_x;
+    const float tip_distance = (float)room_size * 0.32f;
+    const float base_distance = (float)room_size * 0.10f;
+    const float half_width = (float)room_size * 0.14f;
+    const float tip_x = (float)center_x + dir_x * tip_distance;
+    const float tip_y = (float)center_y + dir_y * tip_distance;
+    const float base_center_x = (float)center_x - dir_x * base_distance;
+    const float base_center_y = (float)center_y - dir_y * base_distance;
+
+    glColor4f(0.10f, 0.10f, 0.12f, 1.0f);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(tip_x, tip_y);
+    glVertex2f(base_center_x + right_x * half_width, base_center_y + right_y * half_width);
+    glVertex2f(base_center_x - right_x * half_width, base_center_y - right_y * half_width);
+    glEnd();
+}
+
+void ui_draw_minimap(const Scene* scene, float camera_yaw_degrees, bool visible, int width, int height)
+{
+    const int room_size = 18;
+    const int room_gap = 8;
+    const int panel_padding = 12;
+    const int panel_width = room_size + panel_padding * 2;
+    const int panel_height = SCENE_ROOM_COUNT * room_size + (SCENE_ROOM_COUNT - 1) * room_gap + panel_padding * 2;
+    const int panel_x = width - panel_width - 18;
+    const int panel_y = 18;
+
+    (void)height;
+
+    if (!visible || scene == NULL) {
+        return;
+    }
+
+    glColor4f(0.02f, 0.02f, 0.03f, 0.78f);
+    glBegin(GL_QUADS);
+    glVertex2i(panel_x, panel_y);
+    glVertex2i(panel_x + panel_width, panel_y);
+    glVertex2i(panel_x + panel_width, panel_y + panel_height);
+    glVertex2i(panel_x, panel_y + panel_height);
+    glEnd();
+
+    glColor4f(0.10f, 0.10f, 0.12f, 1.0f);
+    glLineWidth(2.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(panel_x, panel_y);
+    glVertex2i(panel_x + panel_width, panel_y);
+    glVertex2i(panel_x + panel_width, panel_y + panel_height);
+    glVertex2i(panel_x, panel_y + panel_height);
+    glEnd();
+    glLineWidth(1.0f);
+
+    for (int room_index = 0; room_index < SCENE_ROOM_COUNT; ++room_index) {
+        const int visual_index = SCENE_ROOM_COUNT - 1 - room_index;
+        const int room_x = panel_x + panel_padding;
+        const int room_y = panel_y + panel_padding + visual_index * (room_size + room_gap);
+        const int room_center_x = room_x + room_size / 2;
+        const int room_center_y = room_y + room_size / 2;
+
+        if (room_index < SCENE_ROOM_COUNT - 1) {
+            const int connector_x = room_center_x - 3;
+            const int connector_y = room_y - room_gap;
+
+            glColor4f(0.34f, 0.36f, 0.40f, 0.92f);
+            glBegin(GL_QUADS);
+            glVertex2i(connector_x, connector_y);
+            glVertex2i(connector_x + 6, connector_y);
+            glVertex2i(connector_x + 6, connector_y + room_gap);
+            glVertex2i(connector_x, connector_y + room_gap);
+            glEnd();
+        }
+
+        ui_draw_minimap_room(
+            room_x,
+            room_y,
+            room_size,
+            room_index == scene->current_room,
+            scene->room_cleared[room_index],
+            scene->enemy_alive[room_index]);
+
+        if (room_index == scene->current_room) {
+            ui_draw_minimap_player_marker(room_center_x, room_center_y, room_size, camera_yaw_degrees);
+        }
+    }
 }
 
 static void ui_draw_panel(int x, int y, int width, int height, float fill_alpha)

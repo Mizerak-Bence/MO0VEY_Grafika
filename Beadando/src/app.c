@@ -244,6 +244,7 @@ void render_app(App* app)
     glPopMatrix();
 
     ui_begin_overlay(app->window_width, app->window_height);
+    ui_draw_minimap(&app->scene, app->camera.rotation.z, !app->is_paused, app->window_width, app->window_height);
     ui_draw_pause_menu(
         app->window_width,
         app->window_height,
