@@ -17,7 +17,32 @@ typedef struct SceneObstacle
     float center_y;
     float half_width;
     float half_depth;
+    float height;
 } SceneObstacle;
+
+typedef enum RoomLayoutKind
+{
+    ROOM_LAYOUT_ENTRY,
+    ROOM_LAYOUT_RELIQUARY,
+    ROOM_LAYOUT_FORGE,
+    ROOM_LAYOUT_ARCHIVE
+} RoomLayoutKind;
+
+typedef struct RoomDefinition
+{
+    RoomLayoutKind layout_kind;
+    const SceneObstacle* obstacles;
+    int obstacle_count;
+    vec3 enemy_spawn;
+    vec3 floor_tint;
+    vec3 wall_tint;
+    vec3 ceiling_tint;
+    vec3 beam_tint;
+    vec3 accent_tint;
+    float floor_repeat_scale;
+    float wall_repeat_scale;
+    float ceiling_repeat_scale;
+} RoomDefinition;
 
 #define CHAMBER_DOOR_HALF_WIDTH 1.4f
 #define CHAMBER_TRIM_DEPTH 0.18f
@@ -34,9 +59,9 @@ typedef struct SceneObstacle
 #define CHAMBER_FLOOR_TILE_WORLD_SIZE 1.0f
 #define CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE 0.55f
 #define CHAMBER_DOOR_TEXTURE_WORLD_SIZE 0.70f
-#define SECOND_ROOM_CENTER_Y (SCENE_ROOM_HALF_DEPTH * 2.0f)
+#define ROOM_SPACING (SCENE_ROOM_HALF_DEPTH * 2.0f)
 #define WORLD_MIN_Y (-SCENE_ROOM_HALF_DEPTH)
-#define WORLD_MAX_Y (SECOND_ROOM_CENTER_Y + SCENE_ROOM_HALF_DEPTH)
+#define WORLD_MAX_Y (((SCENE_ROOM_COUNT - 1) * ROOM_SPACING) + SCENE_ROOM_HALF_DEPTH)
 #define CONNECTOR_OPEN_HALF_WIDTH (CHAMBER_DOOR_HALF_WIDTH + CHAMBER_DOOR_FRAME_WIDTH - CHAMBER_DOOR_FRAME_OVERLAP)
 #define CONNECTOR_SIDE_HALF_WIDTH ((SCENE_ROOM_HALF_WIDTH - CONNECTOR_OPEN_HALF_WIDTH) * 0.5f)
 #define CONNECTOR_SIDE_CENTER_X (CONNECTOR_OPEN_HALF_WIDTH + CONNECTOR_SIDE_HALF_WIDTH)
@@ -44,45 +69,104 @@ typedef struct SceneObstacle
 #define ROOM_ENTRY_OFFSET 1.25f
 #define ENEMY_DRAW_SIZE 0.78f
 #define ENEMY_CENTER_HEIGHT 0.90f
+#define ENEMY_HITBOX_RADIUS 0.46f
+#define ENEMY_MOVE_SPEED 1.10f
+#define ENEMY_CONTACT_DISTANCE 0.82f
 #define PROJECTILE_DRAW_SIZE 0.20f
 #define PROJECTILE_RADIUS (PROJECTILE_DRAW_SIZE * 0.5f)
 #define PROJECTILE_SPEED 9.0f
 #define ENEMY_PROJECTILE_SPEED 6.5f
 #define PROJECTILE_LIFETIME 1.2f
-#define PROJECTILE_HIT_DISTANCE 0.62f
+#define PROJECTILE_HIT_DISTANCE (ENEMY_HITBOX_RADIUS + PROJECTILE_RADIUS)
+#define ENEMY_MAX_HEALTH 4
 #define ENEMY_FIRE_INTERVAL 1.15f
 #define SCENE_USE_LIGHTING 1
 #define SCENE_SHOW_LIGHT_MARKER 0
 #define PLAYER_COLLISION_RADIUS 0.42f
 #define PLAYER_ROOM_MARGIN 0.46f
+#define PLAYER_MAX_HEALTH 8
+#define PLAYER_DAMAGE_COOLDOWN 0.60f
 
-static const SceneObstacle chamber_obstacles[] = {
-    {0.0f, 0.4f, 1.0f, 1.0f},
-    {-2.8f, 2.2f, 0.7f, 0.5f},
-    {2.8f, 2.2f, 0.7f, 0.5f},
-    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {0.0f, SECOND_ROOM_CENTER_Y + 0.4f, 1.2f, 1.2f},
-    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, SECOND_ROOM_CENTER_Y + SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, SECOND_ROOM_CENTER_Y + SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, SECOND_ROOM_CENTER_Y - SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, SECOND_ROOM_CENTER_Y - SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f},
-    {-CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f},
-    {CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f}
+#define ROOM_OBSTACLE_COUNT(array) ((int)(sizeof(array) / sizeof((array)[0])))
+
+static const SceneObstacle room0_obstacles_local[] = {
+    {0.0f, 0.4f, 1.0f, 1.0f, 0.25f},
+    {-2.8f, 2.2f, 0.7f, 0.5f, 0.35f},
+    {2.8f, 2.2f, 0.7f, 0.5f, 0.35f},
+    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {-CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT}
+};
+
+static const SceneObstacle room1_obstacles_local[] = {
+    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, SCENE_ROOM_HALF_DEPTH - CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {-SCENE_ROOM_HALF_WIDTH + CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {SCENE_ROOM_HALF_WIDTH - CHAMBER_PILLAR_DEPTH * 0.5f, -SCENE_ROOM_HALF_DEPTH + CHAMBER_PILLAR_WIDTH * 0.5f, CHAMBER_PILLAR_DEPTH * 0.5f, CHAMBER_PILLAR_WIDTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {0.0f, -2.55f, 2.2f, 0.50f, 0.24f},
+    {-2.90f, 0.0f, 0.30f, 2.70f, 1.16f},
+    {1.90f, 0.80f, 0.55f, 0.55f, 2.50f},
+    {-0.60f, 0.70f, 0.17f, 0.17f, 2.30f},
+    {0.0f, 3.60f, 2.10f, 0.45f, 1.50f},
+    {2.35f, -1.80f, 0.55f, 0.30f, 0.20f},
+    {-1.55f, 2.00f, 0.45f, 0.30f, 0.20f},
+    {-CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {-CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT}
+};
+
+static const SceneObstacle room2_obstacles_local[] = {
+    {0.0f, 0.0f, 1.75f, 0.70f, 0.28f},
+    {-3.00f, -0.60f, 0.45f, 1.75f, 1.55f},
+    {2.90f, 1.15f, 0.70f, 0.55f, 1.10f},
+    {-0.70f, 2.70f, 0.22f, 0.22f, 2.20f},
+    {1.55f, -2.55f, 0.22f, 0.22f, 2.20f},
+    {0.0f, 3.95f, 2.35f, 0.36f, 0.24f},
+    {0.0f, -3.80f, 2.10f, 0.42f, 0.24f},
+    {-CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {-CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT}
+};
+
+static const SceneObstacle room3_obstacles_local[] = {
+    {-2.45f, -0.35f, 0.45f, 3.10f, 1.85f},
+    {0.20f, 1.10f, 0.40f, 2.55f, 1.80f},
+    {2.55f, -0.80f, 0.40f, 2.90f, 1.80f},
+    {0.0f, 3.60f, 1.60f, 0.40f, 0.32f},
+    {-1.05f, -2.75f, 0.35f, 0.35f, 1.35f},
+    {1.30f, 2.65f, 0.35f, 0.35f, 1.35f},
+    {-CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT},
+    {CONNECTOR_SIDE_CENTER_X, -SCENE_ROOM_HALF_DEPTH, CONNECTOR_SIDE_HALF_WIDTH, CHAMBER_DOOR_FRAME_DEPTH * 0.5f, SCENE_ROOM_HEIGHT}
+};
+
+static const RoomDefinition room_definitions[SCENE_ROOM_COUNT] = {
+    {ROOM_LAYOUT_ENTRY, room0_obstacles_local, ROOM_OBSTACLE_COUNT(room0_obstacles_local), {0.0f, 0.4f, ENEMY_CENTER_HEIGHT}, {0.96f, 0.88f, 0.72f}, {0.80f, 0.78f, 0.74f}, {0.20f, 0.18f, 0.15f}, {0.56f, 0.36f, 0.14f}, {0.78f, 0.62f, 0.28f}, 0.85f, 0.90f, 0.75f},
+    {ROOM_LAYOUT_RELIQUARY, room1_obstacles_local, ROOM_OBSTACLE_COUNT(room1_obstacles_local), {0.40f, -0.20f, ENEMY_CENTER_HEIGHT}, {0.62f, 0.72f, 0.86f}, {0.58f, 0.64f, 0.76f}, {0.14f, 0.18f, 0.28f}, {0.48f, 0.30f, 0.16f}, {0.46f, 0.70f, 0.92f}, 1.30f, 0.82f, 1.15f},
+    {ROOM_LAYOUT_FORGE, room2_obstacles_local, ROOM_OBSTACLE_COUNT(room2_obstacles_local), {-2.10f, -1.10f, ENEMY_CENTER_HEIGHT}, {0.82f, 0.72f, 0.56f}, {0.72f, 0.66f, 0.58f}, {0.16f, 0.14f, 0.12f}, {0.58f, 0.28f, 0.10f}, {0.88f, 0.56f, 0.18f}, 0.72f, 1.28f, 0.88f},
+    {ROOM_LAYOUT_ARCHIVE, room3_obstacles_local, ROOM_OBSTACLE_COUNT(room3_obstacles_local), {1.80f, -1.00f, ENEMY_CENTER_HEIGHT}, {0.78f, 0.76f, 0.68f}, {0.72f, 0.70f, 0.64f}, {0.18f, 0.16f, 0.14f}, {0.50f, 0.34f, 0.18f}, {0.74f, 0.66f, 0.32f}, 1.55f, 0.74f, 1.40f}
 };
 
 static const vec3 player_spawn_position = {0.0f, -SCENE_ROOM_HALF_DEPTH + 1.25f, 0.0f};
 
+static const RoomDefinition* get_room_definition(int room_index);
 static float get_room_center_y(int room_index);
+static vec3 get_room_entry_position(int room_index, bool from_south);
+static vec3 get_room_world_position(int room_index, vec3 local_position);
+static SceneObstacle get_room_world_obstacle(int room_index, int obstacle_index);
 static vec3 get_room_light_anchor(int room_index);
 static int get_room_index_from_y(float y);
 static vec3 clamp_room_position(vec3 position, int room_index, float margin, float min_z, float max_z);
 static vec3 resolve_box_collision(vec3 previous, vec3 desired, float radius, SceneObstacle obstacle);
-static vec3 resolve_chamber_obstacles(vec3 previous, vec3 desired, float radius);
+static vec3 resolve_room_movement(vec3 previous, vec3 desired, int room_index, float radius, float bottom_z, float margin, float min_z, float max_z);
+static vec3 resolve_room_obstacles(vec3 previous, vec3 desired, float radius, int room_index, float bottom_z);
+static vec3 move_enemy_toward_target(const Scene* scene, int room_index, vec3 enemy_position, vec3 target_position, float step_length);
 static void draw_chamber(const Scene* scene);
-static void draw_room(const Scene* scene, float room_center_y, bool open_south, bool open_north, bool draw_south_door, bool draw_north_door);
+static void draw_room(const Scene* scene, float room_center_y, bool open_south, bool open_north, bool draw_south_door, bool draw_north_door, bool draw_west_door, bool draw_east_door);
 static void draw_textured_quad_xy(float z, float min_x, float max_x, float min_y, float max_y, float normal_z, float u_repeat, float v_repeat);
 static void draw_textured_quad_xz(float y, float min_x, float max_x, float min_z, float max_z, float normal_y, float u_repeat, float v_repeat);
 static void draw_textured_quad_yz(float x, float min_y, float max_y, float min_z, float max_z, float normal_x, float u_repeat, float v_repeat);
@@ -93,17 +177,24 @@ static void draw_open_door_frame(vec3 center, float rotation_z, GLuint texture);
 static void draw_selection_box(const SceneObject* object);
 static void get_model_bounds(const Model* model, vec3* min_corner, vec3* max_corner);
 static void draw_pedestal(vec3 position, float width, float depth, float height, GLuint texture, float r, float g, float b);
+static void draw_entry_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint pedestal_texture, GLuint detail_texture);
+static void draw_reliquary_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint ritual_texture, GLuint relic_texture);
+static void draw_forge_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint ritual_texture, GLuint detail_texture);
+static void draw_archive_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint pedestal_texture, GLuint detail_texture);
 static void draw_room_enemy(const Scene* scene, int room_index);
+static void draw_enemy_health_bar_overlay(const Scene* scene, int room_index);
+static bool project_world_to_viewport(vec3 world_position, float* screen_x, float* screen_y, float* depth);
 static void draw_projectiles(const Scene* scene);
 static void clear_projectiles(Scene* scene);
 static int find_projectile_slot(const Scene* scene);
 static bool point_hits_obstacle(vec3 position, float radius, SceneObstacle obstacle);
-static bool projectile_hits_obstacle(vec3 position, float radius);
+static bool projectile_hits_obstacle(int room_index, vec3 position, float radius);
 static void spawn_enemy_projectile(Scene* scene, int room_index);
 static void draw_sphere(vec3 center, float radius, int slices, int stacks, float r, float g, float b);
 static void draw_light_marker(const Scene* scene);
 static void apply_light(const Scene* scene);
 static bool load_object(SceneObject* object, const char* model_path, const char* texture_path, vec3 pos, float scale);
+static void damage_player(Scene* scene, int damage);
 
 void init_scene(Scene* scene)
 {
@@ -114,22 +205,22 @@ void init_scene(Scene* scene)
     scene->chamber_wall_texture = 0;
     scene->pedestal_texture = 0;
     scene->door_texture = 0;
+    scene->enemy_texture = 0;
+    scene->player_max_health = PLAYER_MAX_HEALTH;
+    scene->player_health = scene->player_max_health;
+    scene->player_hit_cooldown = 0.0f;
     scene->elapsed = 0.0f;
 
     scene->light_position = get_room_light_anchor(0);
     scene->light_intensity = 1.1f;
 
     for (int room_index = 0; room_index < SCENE_ROOM_COUNT; ++room_index) {
-        scene->room_cleared[room_index] = true;
-        scene->enemy_alive[room_index] = false;
-        scene->enemy_position[room_index] = (vec3){0.0f, get_room_center_y(room_index), 0.0f};
-        scene->enemy_shot_cooldown[room_index] = ENEMY_FIRE_INTERVAL;
+        scene->room_cleared[room_index] = (room_index == 0);
+        scene->enemy_alive[room_index] = room_index > 0;
+        scene->enemy_health[room_index] = (room_index > 0) ? ENEMY_MAX_HEALTH : 0;
+        scene->enemy_position[room_index] = get_room_world_position(room_index, get_room_definition(room_index)->enemy_spawn);
+        scene->enemy_shot_cooldown[room_index] = (room_index > 0) ? (0.75f + 0.10f * (float)(room_index - 1)) : ENEMY_FIRE_INTERVAL;
     }
-
-    scene->room_cleared[1] = false;
-    scene->enemy_alive[1] = true;
-    scene->enemy_position[1] = (vec3){0.0f, SECOND_ROOM_CENTER_Y + 0.4f, ENEMY_CENTER_HEIGHT};
-    scene->enemy_shot_cooldown[1] = 0.75f;
 
     clear_projectiles(scene);
 
@@ -157,6 +248,7 @@ void init_scene(Scene* scene)
     scene->chamber_wall_texture = load_texture("assets/textures/isaac_wall.ppm");
     scene->pedestal_texture = load_texture("assets/textures/pedestal_stone.ppm");
     scene->door_texture = load_texture("assets/textures/door_panel.ppm");
+    scene->enemy_texture = load_texture("assets/textures/relic_item.ppm");
 
     if (SCENE_USE_LIGHTING) {
         glEnable(GL_LIGHTING);
@@ -198,6 +290,11 @@ void destroy_scene(Scene* scene)
         scene->door_texture = 0;
     }
 
+    if (scene->enemy_texture != 0) {
+        glDeleteTextures(1, &scene->enemy_texture);
+        scene->enemy_texture = 0;
+    }
+
     for (int i = 0; i < scene->object_count; ++i) {
         free_model(&scene->objects[i].model);
         if (scene->objects[i].texture != 0) {
@@ -211,7 +308,32 @@ void update_scene(Scene* scene, double dt)
 {
     scene->elapsed += (float)dt;
 
-    if (scene->enemy_alive[scene->current_room] && scene->object_count > 1) {
+    if (scene->player_hit_cooldown > 0.0f) {
+        scene->player_hit_cooldown -= (float)dt;
+        if (scene->player_hit_cooldown < 0.0f) {
+            scene->player_hit_cooldown = 0.0f;
+        }
+    }
+
+    if (scene->enemy_alive[scene->current_room] && scene->object_count > 1 && scene->player_health > 0) {
+        const vec3 player_position = scene->objects[1].position;
+        vec3 enemy_position = scene->enemy_position[scene->current_room];
+        const float dx = player_position.x - enemy_position.x;
+        const float dy = player_position.y - enemy_position.y;
+        const float distance = sqrtf(dx * dx + dy * dy);
+
+        if (distance > ENEMY_CONTACT_DISTANCE && distance > 0.001f) {
+            scene->enemy_position[scene->current_room] = move_enemy_toward_target(
+                scene,
+                scene->current_room,
+                enemy_position,
+                player_position,
+                ENEMY_MOVE_SPEED * (float)dt);
+        }
+        else {
+            damage_player(scene, 1);
+        }
+
         scene->enemy_shot_cooldown[scene->current_room] -= (float)dt;
         if (scene->enemy_shot_cooldown[scene->current_room] <= 0.0f) {
             spawn_enemy_projectile(scene, scene->current_room);
@@ -241,12 +363,21 @@ void update_scene(Scene* scene, double dt)
             const float hit_distance = sqrtf(
                 (projectile->position.x - enemy_position.x) * (projectile->position.x - enemy_position.x) +
                 (projectile->position.y - enemy_position.y) * (projectile->position.y - enemy_position.y));
+            const float hit_height = fabsf(projectile->position.z - enemy_position.z);
 
-            if (hit_distance <= PROJECTILE_HIT_DISTANCE) {
+            if (hit_distance <= PROJECTILE_HIT_DISTANCE && hit_height <= ENEMY_DRAW_SIZE * 0.8f) {
                 projectile->active = false;
-                scene->enemy_alive[projectile->room_index] = false;
-                scene->room_cleared[projectile->room_index] = true;
-                scene->enemy_shot_cooldown[projectile->room_index] = ENEMY_FIRE_INTERVAL;
+
+                if (scene->enemy_health[projectile->room_index] > 0) {
+                    scene->enemy_health[projectile->room_index]--;
+                }
+
+                if (scene->enemy_health[projectile->room_index] <= 0) {
+                    scene->enemy_alive[projectile->room_index] = false;
+                    scene->enemy_health[projectile->room_index] = 0;
+                    scene->room_cleared[projectile->room_index] = true;
+                    scene->enemy_shot_cooldown[projectile->room_index] = ENEMY_FIRE_INTERVAL;
+                }
                 continue;
             }
         }
@@ -257,13 +388,14 @@ void update_scene(Scene* scene, double dt)
                 (projectile->position.x - player_position.x) * (projectile->position.x - player_position.x) +
                 (projectile->position.y - player_position.y) * (projectile->position.y - player_position.y));
 
-            if (hit_distance <= PROJECTILE_HIT_DISTANCE) {
+            if (hit_distance <= (PLAYER_COLLISION_RADIUS + PROJECTILE_RADIUS)) {
                 projectile->active = false;
+                damage_player(scene, 1);
                 continue;
             }
         }
 
-        if (projectile_hits_obstacle(projectile->position, PROJECTILE_RADIUS)) {
+        if (projectile_hits_obstacle(projectile->room_index, projectile->position, PROJECTILE_RADIUS)) {
             projectile->active = false;
             continue;
         }
@@ -348,6 +480,8 @@ void render_scene(const Scene* scene)
 
         glPopMatrix();
     }
+
+    draw_enemy_health_bar_overlay(scene, scene->current_room);
 }
 
 void scene_select_object(Scene* scene, int index)
@@ -417,18 +551,18 @@ bool scene_use_nearby_door(Scene* scene)
     const float distance_to_north = sqrtf(player->position.x * player->position.x + (player->position.y - north_door_y) * (player->position.y - north_door_y));
     const float distance_to_south = sqrtf(player->position.x * player->position.x + (player->position.y - south_door_y) * (player->position.y - south_door_y));
 
-    if (scene->current_room == 0 && distance_to_north <= DOOR_USE_DISTANCE) {
-        scene->current_room = 1;
-        player->position = (vec3){0.0f, get_room_center_y(1) - SCENE_ROOM_HALF_DEPTH + ROOM_ENTRY_OFFSET, 0.0f};
-        scene->light_position = get_room_light_anchor(1);
+    if (scene->current_room < SCENE_ROOM_COUNT - 1 && distance_to_north <= DOOR_USE_DISTANCE) {
+        scene->current_room++;
+        player->position = get_room_entry_position(scene->current_room, true);
+        scene->light_position = get_room_light_anchor(scene->current_room);
         clear_projectiles(scene);
         return true;
     }
 
-    if (scene->current_room == 1 && distance_to_south <= DOOR_USE_DISTANCE) {
-        scene->current_room = 0;
-        player->position = (vec3){0.0f, get_room_center_y(0) + SCENE_ROOM_HALF_DEPTH - ROOM_ENTRY_OFFSET, 0.0f};
-        scene->light_position = get_room_light_anchor(0);
+    if (scene->current_room > 0 && distance_to_south <= DOOR_USE_DISTANCE) {
+        scene->current_room--;
+        player->position = get_room_entry_position(scene->current_room, false);
+        scene->light_position = get_room_light_anchor(scene->current_room);
         clear_projectiles(scene);
         return true;
     }
@@ -473,7 +607,7 @@ vec3 scene_resolve_player_position(const Scene* scene, vec3 previous_position, v
 {
     vec3 resolved = clamp_room_position(target_position, scene->current_room, PLAYER_ROOM_MARGIN, 0.0f, 1.2f);
 
-    resolved = resolve_chamber_obstacles(previous_position, resolved, PLAYER_COLLISION_RADIUS);
+    resolved = resolve_room_obstacles(previous_position, resolved, PLAYER_COLLISION_RADIUS, scene->current_room, 0.0f);
     resolved = clamp_room_position(resolved, scene->current_room, PLAYER_ROOM_MARGIN, 0.0f, 1.2f);
 
     return resolved;
@@ -500,9 +634,45 @@ static void apply_light(const Scene* scene)
     glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.0f);
 }
 
+static const RoomDefinition* get_room_definition(int room_index)
+{
+    if (room_index < 0 || room_index >= SCENE_ROOM_COUNT) {
+        return &room_definitions[0];
+    }
+
+    return &room_definitions[room_index];
+}
+
 static float get_room_center_y(int room_index)
 {
-    return (room_index == 0) ? 0.0f : SECOND_ROOM_CENTER_Y;
+    return (float)room_index * ROOM_SPACING;
+}
+
+static vec3 get_room_entry_position(int room_index, bool from_south)
+{
+    const float room_center_y = get_room_center_y(room_index);
+
+    return (vec3){
+        0.0f,
+        room_center_y + (from_south ? (-SCENE_ROOM_HALF_DEPTH + ROOM_ENTRY_OFFSET) : (SCENE_ROOM_HALF_DEPTH - ROOM_ENTRY_OFFSET)),
+        0.0f
+    };
+}
+
+static vec3 get_room_world_position(int room_index, vec3 local_position)
+{
+    local_position.y += get_room_center_y(room_index);
+    return local_position;
+}
+
+static SceneObstacle get_room_world_obstacle(int room_index, int obstacle_index)
+{
+    const RoomDefinition* room_definition = get_room_definition(room_index);
+    SceneObstacle obstacle = room_definition->obstacles[obstacle_index];
+
+    obstacle.center_y += get_room_center_y(room_index);
+
+    return obstacle;
 }
 
 static vec3 get_room_light_anchor(int room_index)
@@ -512,7 +682,16 @@ static vec3 get_room_light_anchor(int room_index)
 
 static int get_room_index_from_y(float y)
 {
-    return (y > SECOND_ROOM_CENTER_Y * 0.5f) ? 1 : 0;
+    const int room_index = (int)floorf((y + SCENE_ROOM_HALF_DEPTH) / ROOM_SPACING);
+
+    if (room_index < 0) {
+        return 0;
+    }
+    if (room_index >= SCENE_ROOM_COUNT) {
+        return SCENE_ROOM_COUNT - 1;
+    }
+
+    return room_index;
 }
 
 static vec3 clamp_room_position(vec3 position, int room_index, float margin, float min_z, float max_z)
@@ -562,25 +741,158 @@ static vec3 resolve_box_collision(vec3 previous, vec3 desired, float radius, Sce
     return desired;
 }
 
-static vec3 resolve_chamber_obstacles(vec3 previous, vec3 desired, float radius)
+static vec3 resolve_room_movement(vec3 previous, vec3 desired, int room_index, float radius, float bottom_z, float margin, float min_z, float max_z)
 {
-    const int obstacle_count = (int)(sizeof(chamber_obstacles) / sizeof(chamber_obstacles[0]));
+    desired = clamp_room_position(desired, room_index, margin, min_z, max_z);
+    desired = resolve_room_obstacles(previous, desired, radius, room_index, bottom_z);
+    desired = clamp_room_position(desired, room_index, margin, min_z, max_z);
 
-    for (int i = 0; i < obstacle_count; ++i) {
-        desired = resolve_box_collision(previous, desired, radius, chamber_obstacles[i]);
+    return desired;
+}
+
+static vec3 resolve_room_obstacles(vec3 previous, vec3 desired, float radius, int room_index, float bottom_z)
+{
+    const RoomDefinition* room_definition = get_room_definition(room_index);
+
+    for (int i = 0; i < room_definition->obstacle_count; ++i) {
+        const SceneObstacle obstacle = get_room_world_obstacle(room_index, i);
+
+        if (bottom_z > obstacle.height) {
+            continue;
+        }
+
+        desired = resolve_box_collision(previous, desired, radius, obstacle);
     }
 
     return desired;
 }
 
-static void draw_chamber(const Scene* scene)
+static vec3 move_enemy_toward_target(const Scene* scene, int room_index, vec3 enemy_position, vec3 target_position, float step_length)
 {
-    draw_room(scene, get_room_center_y(scene->current_room), false, false, true, true);
+    const float dx = target_position.x - enemy_position.x;
+    const float dy = target_position.y - enemy_position.y;
+    const float distance = sqrtf(dx * dx + dy * dy);
+    const float candidate_angles[] = {0.0f, 0.35f, -0.35f, 0.70f, -0.70f, 1.05f, -1.05f, 1.40f, -1.40f, 1.75f, -1.75f, 2.20f, -2.20f};
+    const float step_scales[] = {1.0f, 0.72f, 0.44f};
+    vec3 best_position = enemy_position;
+    float best_score = distance;
+    float best_movement = 0.0f;
+    const float axis_dir_x = (fabsf(dx) > 0.001f) ? ((dx > 0.0f) ? 1.0f : -1.0f) : 0.0f;
+    const float axis_dir_y = (fabsf(dy) > 0.001f) ? ((dy > 0.0f) ? 1.0f : -1.0f) : 0.0f;
+
+    (void)scene;
+
+    if (distance <= 0.001f || step_length <= 0.0f) {
+        return enemy_position;
+    }
+
+    for (int i = 0; i < (int)(sizeof(candidate_angles) / sizeof(candidate_angles[0])); ++i) {
+        const float sin_angle = sinf(candidate_angles[i]);
+        const float cos_angle = cosf(candidate_angles[i]);
+        const float base_dir_x = (dx / distance) * cos_angle - (dy / distance) * sin_angle;
+        const float base_dir_y = (dx / distance) * sin_angle + (dy / distance) * cos_angle;
+
+        for (int step_index = 0; step_index < (int)(sizeof(step_scales) / sizeof(step_scales[0])); ++step_index) {
+            vec3 desired_position;
+            vec3 resolved_position;
+            float step = step_length * step_scales[step_index];
+            float movement;
+            float score;
+
+            desired_position = enemy_position;
+            desired_position.x += base_dir_x * step;
+            desired_position.y += base_dir_y * step;
+            desired_position.z = ENEMY_CENTER_HEIGHT;
+
+            resolved_position = resolve_room_movement(
+                enemy_position,
+                desired_position,
+                room_index,
+                ENEMY_HITBOX_RADIUS,
+                0.0f,
+                PLAYER_ROOM_MARGIN,
+                ENEMY_CENTER_HEIGHT,
+                ENEMY_CENTER_HEIGHT);
+
+            movement = sqrtf(
+                (resolved_position.x - enemy_position.x) * (resolved_position.x - enemy_position.x) +
+                (resolved_position.y - enemy_position.y) * (resolved_position.y - enemy_position.y));
+
+            if (movement < step * 0.20f) {
+                continue;
+            }
+
+            score = sqrtf(
+                (target_position.x - resolved_position.x) * (target_position.x - resolved_position.x) +
+                (target_position.y - resolved_position.y) * (target_position.y - resolved_position.y));
+            score += fabsf(candidate_angles[i]) * 0.06f;
+            score += (1.0f - step_scales[step_index]) * 0.18f;
+            score -= movement * 0.26f;
+
+            if (best_movement <= 0.0f || score < best_score) {
+                best_position = resolved_position;
+                best_score = score;
+                best_movement = movement;
+            }
+        }
+    }
+
+    if (best_movement < step_length * 0.32f) {
+        const vec3 axis_targets[] = {
+            {enemy_position.x + axis_dir_x * step_length, enemy_position.y, ENEMY_CENTER_HEIGHT},
+            {enemy_position.x, enemy_position.y + axis_dir_y * step_length, ENEMY_CENTER_HEIGHT},
+            {enemy_position.x + axis_dir_x * step_length * 0.65f, enemy_position.y + axis_dir_y * step_length * 0.35f, ENEMY_CENTER_HEIGHT},
+            {enemy_position.x + axis_dir_x * step_length * 0.35f, enemy_position.y + axis_dir_y * step_length * 0.65f, ENEMY_CENTER_HEIGHT}
+        };
+
+        for (int i = 0; i < (int)(sizeof(axis_targets) / sizeof(axis_targets[0])); ++i) {
+            vec3 resolved_position = resolve_room_movement(
+                enemy_position,
+                axis_targets[i],
+                room_index,
+                ENEMY_HITBOX_RADIUS,
+                0.0f,
+                PLAYER_ROOM_MARGIN,
+                ENEMY_CENTER_HEIGHT,
+                ENEMY_CENTER_HEIGHT);
+            float movement = sqrtf(
+                (resolved_position.x - enemy_position.x) * (resolved_position.x - enemy_position.x) +
+                (resolved_position.y - enemy_position.y) * (resolved_position.y - enemy_position.y));
+            float score;
+
+            if (movement < step_length * 0.18f) {
+                continue;
+            }
+
+            score = sqrtf(
+                (target_position.x - resolved_position.x) * (target_position.x - resolved_position.x) +
+                (target_position.y - resolved_position.y) * (target_position.y - resolved_position.y));
+            score -= movement * 0.22f;
+
+            if (best_movement <= 0.0f || score < best_score) {
+                best_position = resolved_position;
+                best_score = score;
+                best_movement = movement;
+            }
+        }
+    }
+
+    return best_position;
 }
 
-static void draw_room(const Scene* scene, float room_center_y, bool open_south, bool open_north, bool draw_south_door, bool draw_north_door)
+static void draw_chamber(const Scene* scene)
 {
-    const bool second_room = room_center_y > (SCENE_ROOM_HALF_DEPTH * 0.5f);
+    const bool has_south_room = scene->current_room > 0;
+    const bool has_north_room = scene->current_room < (SCENE_ROOM_COUNT - 1);
+
+    draw_room(scene, get_room_center_y(scene->current_room), false, false, has_south_room, has_north_room, false, false);
+}
+
+static void draw_room(const Scene* scene, float room_center_y, bool open_south, bool open_north, bool draw_south_door, bool draw_north_door, bool draw_west_door, bool draw_east_door)
+{
+    const int room_index = get_room_index_from_y(room_center_y);
+    const RoomDefinition* room_definition = get_room_definition(room_index);
+    const bool second_room = room_definition->layout_kind == ROOM_LAYOUT_RELIQUARY;
     const float room_x = SCENE_ROOM_HALF_WIDTH;
     const float room_y = SCENE_ROOM_HALF_DEPTH;
     const float room_z = SCENE_ROOM_HEIGHT;
@@ -598,12 +910,17 @@ static void draw_room(const Scene* scene, float room_center_y, bool open_south, 
     const float connector_header_height = room_z - CHAMBER_DOOR_LEAF_HEIGHT;
     const GLuint pedestal_texture = (scene->pedestal_texture != 0) ? scene->pedestal_texture : scene->chamber_floor_texture;
     const GLuint door_texture = (scene->door_texture != 0) ? scene->door_texture : scene->chamber_wall_texture;
-    const float floor_r = second_room ? 0.78f : 0.92f;
-    const float floor_g = second_room ? 0.83f : 0.88f;
-    const float floor_b = second_room ? 0.90f : 0.82f;
-    const float wall_r = second_room ? 0.78f : 0.88f;
-    const float wall_g = second_room ? 0.82f : 0.84f;
-    const float wall_b = second_room ? 0.88f : 0.80f;
+    const GLuint ceiling_texture = second_room ? door_texture : pedestal_texture;
+    const GLuint wall_detail_texture = second_room ? pedestal_texture : door_texture;
+    const float floor_r = room_definition->floor_tint.x;
+    const float floor_g = room_definition->floor_tint.y;
+    const float floor_b = room_definition->floor_tint.z;
+    const float wall_r = room_definition->wall_tint.x;
+    const float wall_g = room_definition->wall_tint.y;
+    const float wall_b = room_definition->wall_tint.z;
+    const float floor_repeat_scale = room_definition->floor_repeat_scale;
+    const float wall_repeat_scale = room_definition->wall_repeat_scale;
+    const float ceiling_repeat_scale = room_definition->ceiling_repeat_scale;
 
     if (scene->chamber_floor_texture != 0) {
         glEnable(GL_TEXTURE_2D);
@@ -615,7 +932,7 @@ static void draw_room(const Scene* scene, float room_center_y, bool open_south, 
         glColor3f(0.20f, 0.21f, 0.24f);
     }
 
-    draw_textured_quad_xy(0.0f, -room_x, room_x, room_min_y, room_max_y, 1.0f, floor_uv_x, floor_uv_y);
+    draw_textured_quad_xy(0.0f, -room_x, room_x, room_min_y, room_max_y, 1.0f, floor_uv_x * floor_repeat_scale, floor_uv_y * floor_repeat_scale);
 
     if (scene->chamber_wall_texture != 0) {
         glEnable(GL_TEXTURE_2D);
@@ -627,27 +944,27 @@ static void draw_room(const Scene* scene, float room_center_y, bool open_south, 
         glColor3f(0.11f, 0.12f, 0.15f);
     }
 
-    draw_textured_quad_xy(room_z, -room_x, room_x, room_min_y, room_max_y, -1.0f, 4.0f, 4.0f);
+    draw_textured_quad_xy(room_z, -room_x, room_x, room_min_y, room_max_y, -1.0f, 4.0f * ceiling_repeat_scale, 4.0f * ceiling_repeat_scale);
 
     if (open_north) {
-        draw_textured_quad_xz(room_max_y, -room_x, -CONNECTOR_OPEN_HALF_WIDTH, 0.0f, room_z, -1.0f, connector_side_width * wall_u_per_world, 2.0f);
-        draw_textured_quad_xz(room_max_y, CONNECTOR_OPEN_HALF_WIDTH, room_x, 0.0f, room_z, -1.0f, connector_side_width * wall_u_per_world, 2.0f);
-        draw_textured_quad_xz(room_max_y, -CONNECTOR_OPEN_HALF_WIDTH, CONNECTOR_OPEN_HALF_WIDTH, CHAMBER_DOOR_LEAF_HEIGHT, room_z, -1.0f, CONNECTOR_OPEN_HALF_WIDTH * 2.0f * wall_u_per_world, connector_header_height * wall_v_per_world);
+        draw_textured_quad_xz(room_max_y, -room_x, -CONNECTOR_OPEN_HALF_WIDTH, 0.0f, room_z, -1.0f, connector_side_width * wall_u_per_world * wall_repeat_scale, 2.0f * wall_repeat_scale);
+        draw_textured_quad_xz(room_max_y, CONNECTOR_OPEN_HALF_WIDTH, room_x, 0.0f, room_z, -1.0f, connector_side_width * wall_u_per_world * wall_repeat_scale, 2.0f * wall_repeat_scale);
+        draw_textured_quad_xz(room_max_y, -CONNECTOR_OPEN_HALF_WIDTH, CONNECTOR_OPEN_HALF_WIDTH, CHAMBER_DOOR_LEAF_HEIGHT, room_z, -1.0f, CONNECTOR_OPEN_HALF_WIDTH * 2.0f * wall_u_per_world * wall_repeat_scale, connector_header_height * wall_v_per_world * wall_repeat_scale);
     }
     else {
-        draw_textured_quad_xz(room_max_y, -room_x, room_x, 0.0f, room_z, -1.0f, 4.0f, 2.0f);
+        draw_textured_quad_xz(room_max_y, -room_x, room_x, 0.0f, room_z, -1.0f, 4.0f * wall_repeat_scale, 2.0f * wall_repeat_scale);
     }
 
-    draw_textured_quad_yz(-room_x, room_min_y, room_max_y, 0.0f, room_z, 1.0f, 4.0f, 2.0f);
-    draw_textured_quad_yz(room_x, room_min_y, room_max_y, 0.0f, room_z, -1.0f, 4.0f, 2.0f);
+    draw_textured_quad_yz(-room_x, room_min_y, room_max_y, 0.0f, room_z, 1.0f, 4.0f * wall_repeat_scale, 2.0f * wall_repeat_scale);
+    draw_textured_quad_yz(room_x, room_min_y, room_max_y, 0.0f, room_z, -1.0f, 4.0f * wall_repeat_scale, 2.0f * wall_repeat_scale);
 
     if (open_south) {
-        draw_textured_quad_xz(room_min_y, -room_x, -CONNECTOR_OPEN_HALF_WIDTH, 0.0f, room_z, 1.0f, connector_side_width * wall_u_per_world, 2.0f);
-        draw_textured_quad_xz(room_min_y, CONNECTOR_OPEN_HALF_WIDTH, room_x, 0.0f, room_z, 1.0f, connector_side_width * wall_u_per_world, 2.0f);
-        draw_textured_quad_xz(room_min_y, -CONNECTOR_OPEN_HALF_WIDTH, CONNECTOR_OPEN_HALF_WIDTH, CHAMBER_DOOR_LEAF_HEIGHT, room_z, 1.0f, CONNECTOR_OPEN_HALF_WIDTH * 2.0f * wall_u_per_world, connector_header_height * wall_v_per_world);
+        draw_textured_quad_xz(room_min_y, -room_x, -CONNECTOR_OPEN_HALF_WIDTH, 0.0f, room_z, 1.0f, connector_side_width * wall_u_per_world * wall_repeat_scale, 2.0f * wall_repeat_scale);
+        draw_textured_quad_xz(room_min_y, CONNECTOR_OPEN_HALF_WIDTH, room_x, 0.0f, room_z, 1.0f, connector_side_width * wall_u_per_world * wall_repeat_scale, 2.0f * wall_repeat_scale);
+        draw_textured_quad_xz(room_min_y, -CONNECTOR_OPEN_HALF_WIDTH, CONNECTOR_OPEN_HALF_WIDTH, CHAMBER_DOOR_LEAF_HEIGHT, room_z, 1.0f, CONNECTOR_OPEN_HALF_WIDTH * 2.0f * wall_u_per_world * wall_repeat_scale, connector_header_height * wall_v_per_world * wall_repeat_scale);
     }
     else {
-        draw_textured_quad_xz(room_min_y, -room_x, room_x, 0.0f, room_z, 1.0f, 4.0f, 2.0f);
+        draw_textured_quad_xz(room_min_y, -room_x, room_x, 0.0f, room_z, 1.0f, 4.0f * wall_repeat_scale, 2.0f * wall_repeat_scale);
     }
 
     glDisable(GL_TEXTURE_2D);
@@ -734,45 +1051,33 @@ static void draw_room(const Scene* scene, float room_center_y, bool open_south, 
         draw_door_assembly((vec3){0.0f, room_max_y - CHAMBER_DOOR_FRAME_DEPTH * 0.5f, 0.0f}, 180.0f, door_texture);
     }
 
-    draw_door_assembly((vec3){room_x - CHAMBER_DOOR_FRAME_DEPTH * 0.5f, room_center_y, 0.0f}, 90.0f, door_texture);
-    draw_door_assembly((vec3){-room_x + CHAMBER_DOOR_FRAME_DEPTH * 0.5f, room_center_y, 0.0f}, -90.0f, door_texture);
+    if (draw_east_door) {
+        draw_door_assembly((vec3){room_x - CHAMBER_DOOR_FRAME_DEPTH * 0.5f, room_center_y, 0.0f}, 90.0f, door_texture);
+    }
+    if (draw_west_door) {
+        draw_door_assembly((vec3){-room_x + CHAMBER_DOOR_FRAME_DEPTH * 0.5f, room_center_y, 0.0f}, -90.0f, door_texture);
+    }
 
-    if (second_room) {
-        draw_pedestal((vec3){0.0f, room_center_y + 0.4f, 0.0f}, 2.4f, 2.4f, 0.35f, pedestal_texture, 0.74f, 0.82f, 0.94f);
-
-        draw_box(
-            (vec3){0.0f, room_center_y - 1.2f, 0.14f},
-            (vec3){4.2f, 1.2f, 0.28f},
-            0.18f, 0.24f, 0.34f);
-        draw_box(
-            (vec3){-3.7f, room_center_y - 1.4f, 1.05f},
-            (vec3){0.55f, 0.55f, 2.1f},
-            0.20f, 0.28f, 0.42f);
-        draw_box(
-            (vec3){3.7f, room_center_y - 1.4f, 1.05f},
-            (vec3){0.55f, 0.55f, 2.1f},
-            0.20f, 0.28f, 0.42f);
-        draw_box(
-            (vec3){-1.8f, room_center_y + 3.2f, 0.95f},
-            (vec3){0.42f, 0.42f, 1.9f},
-            0.24f, 0.34f, 0.50f);
-        draw_box(
-            (vec3){1.8f, room_center_y + 3.2f, 0.95f},
-            (vec3){0.42f, 0.42f, 1.9f},
-            0.24f, 0.34f, 0.50f);
-        draw_box(
-            (vec3){0.0f, room_center_y, room_z - 0.18f},
-            (vec3){4.8f, 0.26f, 0.18f},
-            0.22f, 0.30f, 0.44f);
-        draw_box(
-            (vec3){0.0f, room_center_y + 2.7f, room_z - 0.18f},
-            (vec3){4.8f, 0.26f, 0.18f},
-            0.22f, 0.30f, 0.44f);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y, room_z - 0.12f},
+        (vec3){room_x * 2.0f - 1.10f, room_y * 2.0f - 1.10f, 0.18f},
+        ceiling_texture,
+        room_definition->ceiling_tint.x,
+        room_definition->ceiling_tint.y,
+        room_definition->ceiling_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    if (room_definition->layout_kind == ROOM_LAYOUT_RELIQUARY) {
+        draw_reliquary_room_features(room_definition, room_center_y, room_z, pedestal_texture, wall_detail_texture);
+    }
+    else if (room_definition->layout_kind == ROOM_LAYOUT_FORGE) {
+        draw_forge_room_features(room_definition, room_center_y, room_z, pedestal_texture, wall_detail_texture);
+    }
+    else if (room_definition->layout_kind == ROOM_LAYOUT_ARCHIVE) {
+        draw_archive_room_features(room_definition, room_center_y, room_z, pedestal_texture, wall_detail_texture);
     }
     else {
-        draw_pedestal((vec3){0.0f, room_center_y + 0.4f, 0.0f}, 2.0f, 2.0f, 0.25f, pedestal_texture, 0.92f, 0.96f, 1.0f);
-        draw_pedestal((vec3){-2.8f, room_center_y + 2.2f, 0.0f}, 1.4f, 1.0f, 0.35f, pedestal_texture, 0.74f, 0.80f, 0.90f);
-        draw_pedestal((vec3){2.8f, room_center_y + 2.2f, 0.0f}, 1.4f, 1.0f, 0.35f, pedestal_texture, 0.74f, 0.80f, 0.90f);
+        draw_entry_room_features(room_definition, room_center_y, room_z, pedestal_texture, wall_detail_texture);
     }
 
     glEnable(GL_TEXTURE_2D);
@@ -932,6 +1237,7 @@ static void draw_textured_box(vec3 center, vec3 size, GLuint texture, float r, f
     const float repeat_y = fmaxf(size.y / texture_world_size, 1.0f);
     const float repeat_z = fmaxf(size.z / texture_world_size, 1.0f);
     const bool disable_lighting = unlit && SCENE_USE_LIGHTING;
+    const GLboolean texture_was_enabled = glIsEnabled(GL_TEXTURE_2D);
 
     if (disable_lighting) {
         glDisable(GL_LIGHTING);
@@ -1022,6 +1328,10 @@ static void draw_textured_box(vec3 center, vec3 size, GLuint texture, float r, f
     glEnd();
 
     glPopMatrix();
+
+    if (!texture_was_enabled) {
+        glDisable(GL_TEXTURE_2D);
+    }
 
     if (disable_lighting) {
         glEnable(GL_LIGHTING);
@@ -1217,6 +1527,369 @@ static void draw_pedestal(vec3 position, float width, float depth, float height,
         true);
 }
 
+static void draw_entry_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint pedestal_texture, GLuint detail_texture)
+{
+    draw_textured_box(
+        (vec3){-1.35f, room_center_y - 0.15f, 0.05f},
+        (vec3){1.20f, 6.10f, 0.10f},
+        detail_texture,
+        0.70f, 0.54f, 0.22f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){1.75f, room_center_y + 1.85f, 0.06f},
+        (vec3){2.90f, 0.90f, 0.12f},
+        detail_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){2.10f, room_center_y - 2.30f, 0.06f},
+        (vec3){1.40f, 1.40f, 0.12f},
+        detail_texture,
+        0.76f, 0.64f, 0.30f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-2.35f, room_center_y + 3.70f, 0.90f},
+        (vec3){1.70f, 0.30f, 1.80f},
+        detail_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 1.95f, room_z - 0.34f},
+        (vec3){9.70f, 0.24f, 0.34f},
+        detail_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 1.95f, room_z - 0.34f},
+        (vec3){9.70f, 0.24f, 0.34f},
+        detail_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y, room_z - 0.30f},
+        (vec3){0.30f, 9.80f, 0.34f},
+        detail_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 5.62f, 1.48f},
+        (vec3){3.20f, 0.24f, 1.60f},
+        detail_texture,
+        0.68f, 0.52f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+
+    draw_pedestal((vec3){0.0f, room_center_y + 0.4f, 0.0f}, 2.0f, 2.0f, 0.25f, pedestal_texture, 0.92f, 0.96f, 1.0f);
+    draw_pedestal((vec3){-2.8f, room_center_y + 2.2f, 0.0f}, 1.4f, 1.0f, 0.35f, pedestal_texture, 0.74f, 0.80f, 0.90f);
+    draw_pedestal((vec3){2.8f, room_center_y + 2.2f, 0.0f}, 1.4f, 1.0f, 0.35f, pedestal_texture, 0.74f, 0.80f, 0.90f);
+    draw_textured_box(
+        (vec3){-2.30f, room_center_y - 2.00f, 0.48f},
+        (vec3){0.48f, 0.48f, 0.96f},
+        detail_texture,
+        0.72f, 0.58f, 0.24f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){2.30f, room_center_y - 2.00f, 0.48f},
+        (vec3){0.48f, 0.48f, 0.96f},
+        detail_texture,
+        0.72f, 0.58f, 0.24f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+}
+
+static void draw_reliquary_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint ritual_texture, GLuint relic_texture)
+{
+    draw_textured_box(
+        (vec3){1.45f, room_center_y + 0.35f, 0.05f},
+        (vec3){1.10f, 7.80f, 0.10f},
+        ritual_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-1.90f, room_center_y - 2.35f, 0.05f},
+        (vec3){1.60f, 1.10f, 0.10f},
+        ritual_texture,
+        0.34f, 0.58f, 0.94f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-3.70f, room_center_y, 0.14f},
+        (vec3){0.42f, 8.80f, 0.24f},
+        ritual_texture,
+        0.26f, 0.46f, 0.84f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 2.55f, 0.12f},
+        (vec3){4.4f, 1.0f, 0.24f},
+        ritual_texture,
+        0.38f, 0.56f, 0.90f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 2.30f, room_z - 0.34f},
+        (vec3){9.40f, 0.28f, 0.34f},
+        relic_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y, room_z - 0.34f},
+        (vec3){9.40f, 0.28f, 0.34f},
+        relic_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 2.30f, room_z - 0.34f},
+        (vec3){9.40f, 0.28f, 0.34f},
+        relic_texture,
+        room_definition->beam_tint.x,
+        room_definition->beam_tint.y,
+        room_definition->beam_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-1.85f, room_center_y - 0.85f, room_z - 0.28f},
+        (vec3){0.22f, 3.10f, 0.30f},
+        relic_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){1.85f, room_center_y + 0.85f, room_z - 0.28f},
+        (vec3){0.22f, 3.10f, 0.30f},
+        relic_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-2.90f, room_center_y, 0.58f},
+        (vec3){0.60f, 5.40f, 1.16f},
+        ritual_texture,
+        0.28f, 0.42f, 0.76f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){1.90f, room_center_y + 0.80f, 1.25f},
+        (vec3){1.10f, 1.10f, 2.50f},
+        relic_texture,
+        0.46f, 0.30f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-0.60f, room_center_y + 0.70f, 1.15f},
+        (vec3){0.34f, 0.34f, 2.30f},
+        relic_texture,
+        0.64f, 0.42f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 3.60f, 0.75f},
+        (vec3){4.20f, 0.90f, 1.50f},
+        relic_texture,
+        0.36f, 0.28f, 0.22f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){2.35f, room_center_y - 1.80f, 0.10f},
+        (vec3){1.10f, 0.60f, 0.20f},
+        ritual_texture,
+        0.54f, 0.68f, 0.94f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-1.55f, room_center_y + 2.00f, 0.10f},
+        (vec3){0.90f, 0.60f, 0.20f},
+        ritual_texture,
+        0.54f, 0.68f, 0.94f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 4.10f, room_z - 0.24f},
+        (vec3){4.8f, 0.28f, 0.20f},
+        relic_texture,
+        0.66f, 0.44f, 0.22f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+}
+
+static void draw_forge_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint ritual_texture, GLuint detail_texture)
+{
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 3.80f, 0.10f},
+        (vec3){4.20f, 0.84f, 0.20f},
+        ritual_texture,
+        0.84f, 0.56f, 0.16f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y, 0.14f},
+        (vec3){3.50f, 1.40f, 0.28f},
+        ritual_texture,
+        0.94f, 0.46f, 0.10f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-3.00f, room_center_y - 0.60f, 0.78f},
+        (vec3){0.90f, 3.50f, 1.55f},
+        detail_texture,
+        0.56f, 0.30f, 0.10f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){2.90f, room_center_y + 1.15f, 0.55f},
+        (vec3){1.40f, 1.10f, 1.10f},
+        detail_texture,
+        0.68f, 0.38f, 0.12f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-0.70f, room_center_y + 2.70f, 1.10f},
+        (vec3){0.44f, 0.44f, 2.20f},
+        detail_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){1.55f, room_center_y - 2.55f, 1.10f},
+        (vec3){0.44f, 0.44f, 2.20f},
+        detail_texture,
+        room_definition->accent_tint.x,
+        room_definition->accent_tint.y,
+        room_definition->accent_tint.z,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 3.95f, room_z - 0.22f},
+        (vec3){4.70f, 0.24f, 0.18f},
+        detail_texture,
+        0.52f, 0.26f, 0.12f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 1.10f, room_z - 0.26f},
+        (vec3){9.20f, 0.22f, 0.18f},
+        detail_texture,
+        0.50f, 0.22f, 0.10f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 1.10f, room_z - 0.26f},
+        (vec3){9.20f, 0.22f, 0.18f},
+        detail_texture,
+        0.50f, 0.22f, 0.10f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+}
+
+static void draw_archive_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint pedestal_texture, GLuint detail_texture)
+{
+    (void)room_definition;
+
+    draw_textured_box(
+        (vec3){-2.45f, room_center_y - 0.35f, 0.92f},
+        (vec3){0.90f, 6.20f, 1.85f},
+        detail_texture,
+        0.44f, 0.30f, 0.16f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.20f, room_center_y + 1.10f, 0.90f},
+        (vec3){0.80f, 5.10f, 1.80f},
+        detail_texture,
+        0.42f, 0.28f, 0.16f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){2.55f, room_center_y - 0.80f, 0.90f},
+        (vec3){0.80f, 5.80f, 1.80f},
+        detail_texture,
+        0.42f, 0.28f, 0.16f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 3.60f, 0.16f},
+        (vec3){3.20f, 0.80f, 0.32f},
+        pedestal_texture,
+        0.70f, 0.66f, 0.54f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 3.40f, 0.10f},
+        (vec3){3.80f, 0.55f, 0.20f},
+        pedestal_texture,
+        0.78f, 0.72f, 0.58f,
+        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){-1.05f, room_center_y - 2.75f, 0.68f},
+        (vec3){0.70f, 0.70f, 1.35f},
+        detail_texture,
+        0.52f, 0.40f, 0.22f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){1.30f, room_center_y + 2.65f, 0.68f},
+        (vec3){0.70f, 0.70f, 1.35f},
+        detail_texture,
+        0.52f, 0.40f, 0.22f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 2.70f, room_z - 0.24f},
+        (vec3){9.30f, 0.18f, 0.18f},
+        detail_texture,
+        0.54f, 0.38f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y - 0.25f, room_z - 0.24f},
+        (vec3){9.30f, 0.18f, 0.18f},
+        detail_texture,
+        0.54f, 0.38f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+    draw_textured_box(
+        (vec3){0.0f, room_center_y + 2.20f, room_z - 0.24f},
+        (vec3){9.30f, 0.18f, 0.18f},
+        detail_texture,
+        0.54f, 0.38f, 0.20f,
+        CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
+        false);
+}
+
 static void draw_room_enemy(const Scene* scene, int room_index)
 {
     if (room_index < 0 || room_index >= SCENE_ROOM_COUNT || !scene->enemy_alive[room_index]) {
@@ -1227,22 +1900,200 @@ static void draw_room_enemy(const Scene* scene, int room_index)
     const float bob_offset = sinf(scene->elapsed * 2.6f) * 0.12f;
     const float enemy_center_z = enemy_position.z + bob_offset;
 
+    if (scene->enemy_texture != 0) {
+        draw_textured_box(
+            (vec3){enemy_position.x, enemy_position.y, enemy_center_z},
+            (vec3){ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE},
+            scene->enemy_texture,
+            0.92f, 0.54f, 0.58f,
+            ENEMY_DRAW_SIZE * 0.75f,
+            false);
+    }
+    else {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_TEXTURE_2D);
+        draw_box(
+            (vec3){enemy_position.x, enemy_position.y, enemy_center_z},
+            (vec3){ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE},
+            0.92f, 0.20f, 0.16f);
+        glEnable(GL_TEXTURE_2D);
+        if (SCENE_USE_LIGHTING) {
+            glEnable(GL_LIGHTING);
+        }
+    }
+
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
-
     draw_box(
-        (vec3){enemy_position.x, enemy_position.y, enemy_center_z},
-        (vec3){ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE, ENEMY_DRAW_SIZE},
-        0.92f, 0.20f, 0.16f);
+        (vec3){enemy_position.x, enemy_position.y + ENEMY_DRAW_SIZE * 0.14f, enemy_center_z + 0.10f},
+        (vec3){ENEMY_DRAW_SIZE * 0.18f, ENEMY_DRAW_SIZE * 0.12f, ENEMY_DRAW_SIZE * 0.08f},
+        0.06f, 0.02f, 0.02f);
     draw_box(
-        (vec3){enemy_position.x, enemy_position.y, enemy_center_z + 0.12f},
-        (vec3){ENEMY_DRAW_SIZE * 0.42f, ENEMY_DRAW_SIZE * 0.42f, ENEMY_DRAW_SIZE * 0.42f},
-        1.0f, 0.84f, 0.20f);
+        (vec3){enemy_position.x, enemy_position.y - ENEMY_DRAW_SIZE * 0.14f, enemy_center_z + 0.10f},
+        (vec3){ENEMY_DRAW_SIZE * 0.18f, ENEMY_DRAW_SIZE * 0.12f, ENEMY_DRAW_SIZE * 0.08f},
+        0.06f, 0.02f, 0.02f);
 
     glEnable(GL_TEXTURE_2D);
     if (SCENE_USE_LIGHTING) {
         glEnable(GL_LIGHTING);
     }
+}
+
+static void draw_enemy_health_bar_overlay(const Scene* scene, int room_index)
+{
+    const vec3 enemy_position = scene->enemy_position[room_index];
+    const float enemy_center_z = enemy_position.z + sinf(scene->elapsed * 2.6f) * 0.12f;
+    float screen_x;
+    float screen_y;
+    float depth;
+    GLint viewport[4];
+    GLboolean depth_test_enabled;
+    const int segment_count = ENEMY_MAX_HEALTH;
+    const int segment_gap = 3;
+    int bar_width;
+    int segment_width;
+    int bar_height;
+    int panel_x;
+    int panel_y;
+    float scene_depth = 1.0f;
+    GLint sample_x;
+    GLint sample_y;
+
+    if (room_index < 0 || room_index >= SCENE_ROOM_COUNT || !scene->enemy_alive[room_index]) {
+        return;
+    }
+
+    if (!project_world_to_viewport((vec3){enemy_position.x, enemy_position.y, enemy_center_z + ENEMY_DRAW_SIZE * 1.18f + 0.20f}, &screen_x, &screen_y, &depth)) {
+        return;
+    }
+
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    depth_test_enabled = glIsEnabled(GL_DEPTH_TEST);
+
+    sample_x = (GLint)clampf(screen_x, 0.0f, (float)(viewport[2] - 1));
+    sample_y = viewport[3] - 1 - (GLint)clampf(screen_y, 0.0f, (float)(viewport[3] - 1));
+    glReadPixels(sample_x, sample_y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &scene_depth);
+
+    if (depth > scene_depth + 0.0025f) {
+        return;
+    }
+
+    bar_width = 74;
+    bar_height = 10;
+    segment_width = (bar_width - segment_gap * (segment_count - 1)) / segment_count;
+    panel_x = (int)(screen_x - (float)bar_width * 0.5f) - 6;
+    panel_y = (int)(screen_y - 24.0f) - 6;
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+
+    glColor4f(0.05f, 0.02f, 0.03f, 0.92f);
+    glBegin(GL_QUADS);
+    glVertex2i(panel_x, panel_y);
+    glVertex2i(panel_x + bar_width + 12, panel_y);
+    glVertex2i(panel_x + bar_width + 12, panel_y + bar_height + 12);
+    glVertex2i(panel_x, panel_y + bar_height + 12);
+    glEnd();
+
+    for (int i = 0; i < segment_count; ++i) {
+        const int segment_x = panel_x + 6 + i * (segment_width + segment_gap);
+        const bool active_segment = i < scene->enemy_health[room_index];
+
+        if (active_segment) {
+            glColor4f(0.92f, 0.20f, 0.14f, 1.0f);
+        }
+        else {
+            glColor4f(0.20f, 0.06f, 0.08f, 1.0f);
+        }
+
+        glBegin(GL_QUADS);
+        glVertex2i(segment_x, panel_y + 6);
+        glVertex2i(segment_x + segment_width, panel_y + 6);
+        glVertex2i(segment_x + segment_width, panel_y + 6 + bar_height);
+        glVertex2i(segment_x, panel_y + 6 + bar_height);
+        glEnd();
+    }
+
+    glColor4f(0.98f, 0.92f, 0.84f, 1.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(panel_x, panel_y);
+    glVertex2i(panel_x + bar_width + 12, panel_y);
+    glVertex2i(panel_x + bar_width + 12, panel_y + bar_height + 12);
+    glVertex2i(panel_x, panel_y + bar_height + 12);
+    glEnd();
+
+    if (depth_test_enabled) {
+        glEnable(GL_DEPTH_TEST);
+    }
+    glEnable(GL_TEXTURE_2D);
+    if (SCENE_USE_LIGHTING) {
+        glEnable(GL_LIGHTING);
+    }
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+}
+
+static bool project_world_to_viewport(vec3 world_position, float* screen_x, float* screen_y, float* depth)
+{
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLint viewport[4];
+    const GLdouble x = (GLdouble)world_position.x;
+    const GLdouble y = (GLdouble)world_position.y;
+    const GLdouble z = (GLdouble)world_position.z;
+    GLdouble eye[4];
+    GLdouble clip[4];
+    GLdouble ndc_x;
+    GLdouble ndc_y;
+    GLdouble ndc_z;
+
+    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    eye[0] = modelview[0] * x + modelview[4] * y + modelview[8] * z + modelview[12];
+    eye[1] = modelview[1] * x + modelview[5] * y + modelview[9] * z + modelview[13];
+    eye[2] = modelview[2] * x + modelview[6] * y + modelview[10] * z + modelview[14];
+    eye[3] = modelview[3] * x + modelview[7] * y + modelview[11] * z + modelview[15];
+
+    clip[0] = projection[0] * eye[0] + projection[4] * eye[1] + projection[8] * eye[2] + projection[12] * eye[3];
+    clip[1] = projection[1] * eye[0] + projection[5] * eye[1] + projection[9] * eye[2] + projection[13] * eye[3];
+    clip[2] = projection[2] * eye[0] + projection[6] * eye[1] + projection[10] * eye[2] + projection[14] * eye[3];
+    clip[3] = projection[3] * eye[0] + projection[7] * eye[1] + projection[11] * eye[2] + projection[15] * eye[3];
+
+    if (clip[3] <= 0.0001) {
+        return false;
+    }
+
+    ndc_x = clip[0] / clip[3];
+    ndc_y = clip[1] / clip[3];
+    ndc_z = clip[2] / clip[3];
+
+    if (fabs(ndc_x) > 1.2 || fabs(ndc_y) > 1.2 || ndc_z < -1.0 || ndc_z > 1.0) {
+        return false;
+    }
+
+    *screen_x = (float)(viewport[0] + (ndc_x + 1.0) * 0.5 * viewport[2]);
+    *screen_y = (float)(viewport[3] - ((ndc_y + 1.0) * 0.5 * viewport[3]));
+    *depth = (float)((ndc_z + 1.0) * 0.5);
+
+    return true;
 }
 
 static void clear_projectiles(Scene* scene)
@@ -1278,21 +2129,39 @@ static int find_projectile_slot(const Scene* scene)
 
 static bool point_hits_obstacle(vec3 position, float radius, SceneObstacle obstacle)
 {
+    if (position.z > obstacle.height + radius) {
+        return false;
+    }
+
     return fabsf(position.x - obstacle.center_x) <= (obstacle.half_width + radius)
         && fabsf(position.y - obstacle.center_y) <= (obstacle.half_depth + radius);
 }
 
-static bool projectile_hits_obstacle(vec3 position, float radius)
+static bool projectile_hits_obstacle(int room_index, vec3 position, float radius)
 {
-    const int obstacle_count = (int)(sizeof(chamber_obstacles) / sizeof(chamber_obstacles[0]));
+    const RoomDefinition* room_definition = get_room_definition(room_index);
 
-    for (int i = 0; i < obstacle_count; ++i) {
-        if (point_hits_obstacle(position, radius, chamber_obstacles[i])) {
+    for (int i = 0; i < room_definition->obstacle_count; ++i) {
+        if (point_hits_obstacle(position, radius, get_room_world_obstacle(room_index, i))) {
             return true;
         }
     }
 
     return false;
+}
+
+static void damage_player(Scene* scene, int damage)
+{
+    if (damage <= 0 || scene->player_health <= 0 || scene->player_hit_cooldown > 0.0f) {
+        return;
+    }
+
+    scene->player_health -= damage;
+    if (scene->player_health < 0) {
+        scene->player_health = 0;
+    }
+
+    scene->player_hit_cooldown = PLAYER_DAMAGE_COOLDOWN;
 }
 
 static void spawn_enemy_projectile(Scene* scene, int room_index)

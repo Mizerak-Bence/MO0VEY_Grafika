@@ -28,9 +28,12 @@ static const char* pause_instruction_lines[] = {
     "",
     "  W/A/S/D   mozgas",
     "  Mouse     kamera forgatas Isaac fejebol",
+    "  HP csik   bal felul mutatja az eleterot",
     "  Mini-map  jobb felul mutatja a szobakat",
     "  Q         lovedek kilovese",
     "  E         ajto hasznalata, ha a szoba tiszta",
+    "  Halal utan a menuben ujraindithato a jatek",
+    "  Pause-bol a teljes szint ujraindithato",
     "  Esc       pause menu / vissza",
     "  Enter     menu pont megerositese",
     "",
@@ -38,7 +41,7 @@ static const char* pause_instruction_lines[] = {
     "",
     "  Tobb lovedek lehet egyszerre aktiv",
     "  A lovedek falnak vagy akadalyoknak utkozve eltunik",
-    "  A masodik szobaban az enemy tavolrol is tamad",
+    "  A masodik szobaban az enemy kozelit es tavolrol is tamad",
     "",
     "Debug",
     "",
@@ -108,6 +111,63 @@ int ui_get_pause_instruction_max_scroll(void)
     const int max_scroll = line_count - UI_PAUSE_INSTRUCTION_VISIBLE_LINES;
 
     return (max_scroll > 0) ? max_scroll : 0;
+}
+
+void ui_draw_player_health(const Scene* scene, bool visible, int width, int height)
+{
+    if (!visible || scene == NULL || scene->player_max_health <= 0) {
+        return;
+    }
+
+    const int panel_x = (width > 240) ? 18 : 10;
+    const int panel_y = (height > 120) ? 16 : 10;
+    const int panel_width = 210;
+    const int panel_height = 54;
+    const int bar_x = panel_x + 18;
+    const int bar_y = panel_y + 26;
+    const int bar_width = 172;
+    const int bar_height = 14;
+    const float ratio = (scene->player_health > 0)
+        ? (float)scene->player_health / (float)scene->player_max_health
+        : 0.0f;
+    const int fill_width = (int)(ratio * (float)bar_width);
+    char health_text[48];
+
+    snprintf(health_text, sizeof(health_text), "HP %d / %d", scene->player_health, scene->player_max_health);
+
+    ui_draw_panel(panel_x, panel_y, panel_width, panel_height, 0.72f);
+
+    glColor4f(0.16f, 0.04f, 0.05f, 0.96f);
+    glBegin(GL_QUADS);
+    glVertex2i(bar_x, bar_y);
+    glVertex2i(bar_x + bar_width, bar_y);
+    glVertex2i(bar_x + bar_width, bar_y + bar_height);
+    glVertex2i(bar_x, bar_y + bar_height);
+    glEnd();
+
+    if (fill_width > 0) {
+        glColor4f((scene->player_health > 2) ? 0.84f : 0.92f, (scene->player_health > 2) ? 0.18f : 0.08f, 0.12f, 1.0f);
+        glBegin(GL_QUADS);
+        glVertex2i(bar_x, bar_y);
+        glVertex2i(bar_x + fill_width, bar_y);
+        glVertex2i(bar_x + fill_width, bar_y + bar_height);
+        glVertex2i(bar_x, bar_y + bar_height);
+        glEnd();
+    }
+
+    glColor4f(0.98f, 0.92f, 0.86f, 1.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2i(bar_x, bar_y);
+    glVertex2i(bar_x + bar_width, bar_y);
+    glVertex2i(bar_x + bar_width, bar_y + bar_height);
+    glVertex2i(bar_x, bar_y + bar_height);
+    glEnd();
+
+    ui_draw_text(panel_x + 18, panel_y + 8, health_text);
+
+    if (scene->player_health <= 0) {
+        ui_draw_text(panel_x + 18, panel_y + 44, "MEGHALTAL");
+    }
 }
 
 static void ui_draw_minimap_room(int x, int y, int size, bool current_room, bool cleared_room, bool enemy_alive)
@@ -301,14 +361,14 @@ static void ui_draw_menu_button(int x, int y, int width, int height, const char*
     ui_draw_text(x + 18, y + 12, label);
 }
 
-void ui_draw_pause_menu(int width, int height, bool visible, int selection, bool show_instructions, int instruction_scroll)
+void ui_draw_pause_menu(int width, int height, bool visible, bool game_over, int selection, bool show_instructions, int instruction_scroll)
 {
     if (!visible) {
         return;
     }
 
     const int panel_width = show_instructions ? 640 : 420;
-    const int panel_height = show_instructions ? 392 : 250;
+    const int panel_height = show_instructions ? 392 : (game_over ? 286 : 304);
     const int x = (width - panel_width) / 2;
     const int y = (height - panel_height) / 2;
 
@@ -373,12 +433,28 @@ void ui_draw_pause_menu(int width, int height, bool visible, int selection, bool
         }
     }
     else {
-        ui_draw_text(x + 24, y + 22, "PAUSE MENU");
+        const int button_y = game_over ? (y + 92) : (y + 64);
 
-        ui_draw_menu_button(x + 24, y + 66, panel_width - 48, 42, "Folytatas", selection == 0);
-        ui_draw_menu_button(x + 24, y + 118, panel_width - 48, 42, "Hasznalati utasitas", selection == 1);
-        ui_draw_menu_button(x + 24, y + 170, panel_width - 48, 42, "Kilepes", selection == 2);
+        ui_draw_text(x + 24, y + 22, game_over ? "GAME OVER" : "PAUSE MENU");
 
-        ui_draw_text(x + 24, y + panel_height - 34, "W/S vagy nyilak: valasztas | Enter: ok | Esc: vissza a jatekba");
+        if (game_over) {
+            ui_draw_text(x + 24, y + 52, "Az ujrainditas visszatesz a kezdo szobaba.");
+            ui_draw_menu_button(x + 24, button_y, panel_width - 48, 42, "Jatekkor ujrainditasa", selection == 0);
+            ui_draw_menu_button(x + 24, button_y + 52, panel_width - 48, 42, "Hasznalati utasitas", selection == 1);
+            ui_draw_menu_button(x + 24, button_y + 104, panel_width - 48, 42, "Kilepes", selection == 2);
+        }
+        else {
+            ui_draw_menu_button(x + 24, button_y, panel_width - 48, 42, "Folytatas", selection == 0);
+            ui_draw_menu_button(x + 24, button_y + 52, panel_width - 48, 42, "Szint ujrainditasa", selection == 1);
+            ui_draw_menu_button(x + 24, button_y + 104, panel_width - 48, 42, "Hasznalati utasitas", selection == 2);
+            ui_draw_menu_button(x + 24, button_y + 156, panel_width - 48, 42, "Kilepes", selection == 3);
+        }
+
+        if (game_over) {
+            ui_draw_text(x + 24, y + panel_height - 34, "W/S vagy nyilak: valasztas | Enter: ok");
+        }
+        else {
+            ui_draw_text(x + 24, y + panel_height - 34, "W/S vagy nyilak: valasztas | Enter: ok | Esc: vissza a jatekba");
+        }
     }
 }

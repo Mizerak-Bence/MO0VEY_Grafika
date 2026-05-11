@@ -23,8 +23,12 @@ static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion);
 static void set_mouse_capture(App* app, bool enabled);
 static void try_fix_working_directory(void);
 static void set_perspective_projection(double fovy_deg, double aspect, double near_plane, double far_plane);
+static int get_pause_menu_item_count(const App* app);
 static void update_player(App* app, double dt);
 static void update_player_camera(App* app);
+static bool is_game_over(const App* app);
+static void open_pause_menu(App* app);
+static void restart_game(App* app);
 static void reset_pause_menu(App* app);
 static void scroll_pause_instruction(App* app, int delta);
 
@@ -229,9 +233,16 @@ void update_app(App* app)
         return;
     }
 
-    update_player(app, dt);
-    update_player_camera(app);
+    if (app->scene.player_health > 0) {
+        update_player(app, dt);
+        update_player_camera(app);
+    }
+
     update_scene(&app->scene, dt);
+
+    if (is_game_over(app) && !app->is_paused) {
+        open_pause_menu(app);
+    }
 }
 
 void render_app(App* app)
@@ -244,11 +255,13 @@ void render_app(App* app)
     glPopMatrix();
 
     ui_begin_overlay(app->window_width, app->window_height);
+    ui_draw_player_health(&app->scene, true, app->window_width, app->window_height);
     ui_draw_minimap(&app->scene, app->camera.rotation.z, !app->is_paused, app->window_width, app->window_height);
     ui_draw_pause_menu(
         app->window_width,
         app->window_height,
         app->is_paused,
+        is_game_over(app),
         app->pause_menu_selection,
         app->pause_menu_show_instructions,
         app->pause_menu_instruction_scroll);
@@ -279,7 +292,8 @@ void destroy_app(App* app)
 
 static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
 {
-    static const int pause_menu_item_count = 3;
+    const bool game_over = is_game_over(app);
+    const int pause_menu_item_count = get_pause_menu_item_count(app);
 
     if (key->repeat) {
         return;
@@ -291,20 +305,13 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
             if (app->pause_menu_show_instructions) {
                 app->pause_menu_show_instructions = false;
             }
-            else {
+            else if (!game_over) {
                 app->is_paused = false;
                 set_mouse_capture(app, true);
             }
         }
         else {
-            app->is_paused = true;
-            reset_pause_menu(app);
-            app->move_forward = false;
-            app->move_back = false;
-            app->move_left = false;
-            app->move_right = false;
-            app->player_speed = (vec3){0.0f, 0.0f, 0.0f};
-            set_mouse_capture(app, false);
+            open_pause_menu(app);
         }
         break;
     case SDL_SCANCODE_RETURN:
@@ -316,14 +323,33 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
             else {
                 switch (app->pause_menu_selection) {
                 case 0:
-                    app->is_paused = false;
-                    set_mouse_capture(app, true);
+                    if (game_over) {
+                        restart_game(app);
+                    }
+                    else {
+                        app->is_paused = false;
+                        set_mouse_capture(app, true);
+                    }
                     break;
                 case 1:
-                    app->pause_menu_show_instructions = true;
-                    app->pause_menu_instruction_scroll = 0;
+                    if (game_over) {
+                        app->pause_menu_show_instructions = true;
+                        app->pause_menu_instruction_scroll = 0;
+                    }
+                    else {
+                        restart_game(app);
+                    }
                     break;
                 case 2:
+                    if (game_over) {
+                        app->is_running = false;
+                    }
+                    else {
+                        app->pause_menu_show_instructions = true;
+                        app->pause_menu_instruction_scroll = 0;
+                    }
+                    break;
+                case 3:
                     app->is_running = false;
                     break;
                 default:
@@ -380,25 +406,37 @@ static void handle_keydown(App* app, const SDL_KeyboardEvent* key)
         return;
     }
 
+    const bool player_alive = app->scene.player_health > 0;
+
     switch (key->keysym.scancode) {
     // player movement
     case SDL_SCANCODE_W:
-        app->move_forward = true;
+        if (player_alive) {
+            app->move_forward = true;
+        }
         break;
     case SDL_SCANCODE_S:
-        app->move_back = true;
+        if (player_alive) {
+            app->move_back = true;
+        }
         break;
     case SDL_SCANCODE_A:
-        app->move_left = true;
+        if (player_alive) {
+            app->move_left = true;
+        }
         break;
     case SDL_SCANCODE_D:
-        app->move_right = true;
+        if (player_alive) {
+            app->move_right = true;
+        }
         break;
     case SDL_SCANCODE_Q:
-        scene_fire_projectile(&app->scene, app->camera.rotation.z);
+        if (player_alive) {
+            scene_fire_projectile(&app->scene, app->camera.rotation.z);
+        }
         break;
     case SDL_SCANCODE_E:
-        if (scene_use_nearby_door(&app->scene)) {
+        if (player_alive && scene_use_nearby_door(&app->scene)) {
             update_player_camera(app);
         }
         break;
@@ -567,6 +605,16 @@ static void update_player_camera(App* app)
     app->camera.position.z = player->position.z + app->camera_follow_height;
 }
 
+static int get_pause_menu_item_count(const App* app)
+{
+    return is_game_over(app) ? 3 : 4;
+}
+
+static bool is_game_over(const App* app)
+{
+    return app->scene.player_health <= 0;
+}
+
 static void handle_mouse_motion(App* app, const SDL_MouseMotionEvent* motion)
 {
     if (app->is_paused) {
@@ -588,6 +636,36 @@ static void set_mouse_capture(App* app, bool enabled)
     if (SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE) != 0 && enabled) {
         printf("[WARN] Unable to enable relative mouse mode: %s\n", SDL_GetError());
     }
+}
+
+static void open_pause_menu(App* app)
+{
+    app->is_paused = true;
+    reset_pause_menu(app);
+    app->move_forward = false;
+    app->move_back = false;
+    app->move_left = false;
+    app->move_right = false;
+    app->player_speed = (vec3){0.0f, 0.0f, 0.0f};
+    set_mouse_capture(app, false);
+}
+
+static void restart_game(App* app)
+{
+    destroy_scene(&app->scene);
+    init_camera(&app->camera);
+    init_scene(&app->scene);
+
+    app->move_forward = false;
+    app->move_back = false;
+    app->move_left = false;
+    app->move_right = false;
+    app->player_speed = (vec3){0.0f, 0.0f, 0.0f};
+    app->is_paused = false;
+    reset_pause_menu(app);
+    update_player_camera(app);
+    set_mouse_capture(app, true);
+    app->uptime = (double)SDL_GetTicks() / 1000.0;
 }
 
 static void reset_pause_menu(App* app)

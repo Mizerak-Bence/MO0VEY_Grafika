@@ -11,7 +11,7 @@
 
 #define SCENE_MAX_OBJECTS 2
 #define SCENE_MAX_PROJECTILES 32
-#define SCENE_ROOM_COUNT 2
+#define SCENE_ROOM_COUNT 4
 #define SCENE_ROOM_HALF_WIDTH 6.0f
 #define SCENE_ROOM_HALF_DEPTH 6.0f
 #define SCENE_ROOM_HEIGHT 4.5f
@@ -49,11 +49,17 @@ typedef struct Scene
     GLuint chamber_wall_texture;
     GLuint pedestal_texture;
     GLuint door_texture;
+    GLuint enemy_texture;
 
     bool room_cleared[SCENE_ROOM_COUNT];
     bool enemy_alive[SCENE_ROOM_COUNT];
+    int enemy_health[SCENE_ROOM_COUNT];
     vec3 enemy_position[SCENE_ROOM_COUNT];
     float enemy_shot_cooldown[SCENE_ROOM_COUNT];
+
+    int player_health;
+    int player_max_health;
+    float player_hit_cooldown;
 
     vec3 light_position;
     float light_intensity;
