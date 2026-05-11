@@ -189,6 +189,7 @@ static void clear_projectiles(Scene* scene);
 static int find_projectile_slot(const Scene* scene);
 static bool point_hits_obstacle(vec3 position, float radius, SceneObstacle obstacle);
 static bool projectile_hits_obstacle(int room_index, vec3 position, float radius);
+static bool projectile_path_hits_obstacle(int room_index, vec3 start, vec3 end, float radius);
 static void spawn_enemy_projectile(Scene* scene, int room_index);
 static void draw_sphere(vec3 center, float radius, int slices, int stacks, float r, float g, float b);
 static void draw_light_marker(const Scene* scene);
@@ -343,6 +344,7 @@ void update_scene(Scene* scene, double dt)
 
     for (int i = 0; i < SCENE_MAX_PROJECTILES; ++i) {
         SceneProjectile* projectile = &scene->projectiles[i];
+        const vec3 previous_position = projectile->position;
 
         if (!projectile->active) {
             continue;
@@ -354,6 +356,11 @@ void update_scene(Scene* scene, double dt)
         projectile->lifetime -= (float)dt;
 
         if (projectile->lifetime <= 0.0f) {
+            projectile->active = false;
+            continue;
+        }
+
+        if (projectile_path_hits_obstacle(projectile->room_index, previous_position, projectile->position, PROJECTILE_RADIUS)) {
             projectile->active = false;
             continue;
         }
@@ -393,11 +400,6 @@ void update_scene(Scene* scene, double dt)
                 damage_player(scene, 1);
                 continue;
             }
-        }
-
-        if (projectile_hits_obstacle(projectile->room_index, projectile->position, PROJECTILE_RADIUS)) {
-            projectile->active = false;
-            continue;
         }
 
         const float room_center_y = get_room_center_y(projectile->room_index);
@@ -587,14 +589,19 @@ void scene_fire_projectile(Scene* scene, float yaw_degrees)
     const int projectile_index = find_projectile_slot(scene);
     SceneProjectile* projectile = &scene->projectiles[projectile_index];
 
-    projectile->active = true;
-    projectile->hostile = false;
-    projectile->room_index = scene->current_room;
     projectile->position = (vec3){
         player->position.x + forward.x * 0.65f,
         player->position.y + forward.y * 0.65f,
         ENEMY_CENTER_HEIGHT
     };
+
+    if (projectile_path_hits_obstacle(scene->current_room, (vec3){player->position.x, player->position.y, ENEMY_CENTER_HEIGHT}, projectile->position, PROJECTILE_RADIUS)) {
+        return;
+    }
+
+    projectile->active = true;
+    projectile->hostile = false;
+    projectile->room_index = scene->current_room;
     projectile->velocity = (vec3){
         forward.x * PROJECTILE_SPEED,
         forward.y * PROJECTILE_SPEED,
@@ -1530,15 +1537,15 @@ static void draw_pedestal(vec3 position, float width, float depth, float height,
 static void draw_entry_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint pedestal_texture, GLuint detail_texture)
 {
     draw_textured_box(
-        (vec3){-1.35f, room_center_y - 0.15f, 0.05f},
-        (vec3){1.20f, 6.10f, 0.10f},
+        (vec3){0.0f, room_center_y - 2.00f, 0.05f},
+        (vec3){1.20f, 2.40f, 0.10f},
         detail_texture,
         0.70f, 0.54f, 0.22f,
         CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
         false);
     draw_textured_box(
-        (vec3){1.75f, room_center_y + 1.85f, 0.06f},
-        (vec3){2.90f, 0.90f, 0.12f},
+        (vec3){0.0f, room_center_y + 3.10f, 0.06f},
+        (vec3){4.10f, 0.80f, 0.12f},
         detail_texture,
         room_definition->accent_tint.x,
         room_definition->accent_tint.y,
@@ -1546,15 +1553,15 @@ static void draw_entry_room_features(const RoomDefinition* room_definition, floa
         CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
         false);
     draw_textured_box(
-        (vec3){2.10f, room_center_y - 2.30f, 0.06f},
-        (vec3){1.40f, 1.40f, 0.12f},
+        (vec3){0.0f, room_center_y + 0.40f, 0.06f},
+        (vec3){4.60f, 0.90f, 0.12f},
         detail_texture,
         0.76f, 0.64f, 0.30f,
         CHAMBER_DOOR_TEXTURE_WORLD_SIZE,
         false);
     draw_textured_box(
-        (vec3){-2.35f, room_center_y + 3.70f, 0.90f},
-        (vec3){1.70f, 0.30f, 1.80f},
+        (vec3){0.0f, room_center_y + 3.95f, 0.82f},
+        (vec3){2.80f, 0.30f, 1.64f},
         detail_texture,
         room_definition->beam_tint.x,
         room_definition->beam_tint.y,
@@ -1618,19 +1625,12 @@ static void draw_entry_room_features(const RoomDefinition* room_definition, floa
 static void draw_reliquary_room_features(const RoomDefinition* room_definition, float room_center_y, float room_z, GLuint ritual_texture, GLuint relic_texture)
 {
     draw_textured_box(
-        (vec3){1.45f, room_center_y + 0.35f, 0.05f},
-        (vec3){1.10f, 7.80f, 0.10f},
+        (vec3){0.0f, room_center_y - 0.10f, 0.05f},
+        (vec3){1.70f, 7.20f, 0.10f},
         ritual_texture,
         room_definition->accent_tint.x,
         room_definition->accent_tint.y,
         room_definition->accent_tint.z,
-        CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
-        false);
-    draw_textured_box(
-        (vec3){-1.90f, room_center_y - 2.35f, 0.05f},
-        (vec3){1.60f, 1.10f, 0.10f},
-        ritual_texture,
-        0.34f, 0.58f, 0.94f,
         CHAMBER_PEDESTAL_TEXTURE_WORLD_SIZE,
         false);
     draw_textured_box(
@@ -2150,6 +2150,44 @@ static bool projectile_hits_obstacle(int room_index, vec3 position, float radius
     return false;
 }
 
+static bool projectile_path_hits_obstacle(int room_index, vec3 start, vec3 end, float radius)
+{
+    const float delta_x = end.x - start.x;
+    const float delta_y = end.y - start.y;
+    const float delta_z = end.z - start.z;
+    const float distance = sqrtf(delta_x * delta_x + delta_y * delta_y + delta_z * delta_z);
+    const float sample_stride = fmaxf(radius * 0.5f, 0.05f);
+    int sample_count;
+
+    if (projectile_hits_obstacle(room_index, start, radius) || projectile_hits_obstacle(room_index, end, radius)) {
+        return true;
+    }
+
+    if (distance <= sample_stride) {
+        return false;
+    }
+
+    sample_count = (int)ceilf(distance / sample_stride);
+    if (sample_count < 2) {
+        sample_count = 2;
+    }
+
+    for (int i = 1; i < sample_count; ++i) {
+        const float t = (float)i / (float)sample_count;
+        const vec3 sample = {
+            start.x + delta_x * t,
+            start.y + delta_y * t,
+            start.z + delta_z * t
+        };
+
+        if (projectile_hits_obstacle(room_index, sample, radius)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 static void damage_player(Scene* scene, int damage)
 {
     if (damage <= 0 || scene->player_health <= 0 || scene->player_hit_cooldown > 0.0f) {
@@ -2185,14 +2223,19 @@ static void spawn_enemy_projectile(Scene* scene, int room_index)
         direction.y /= direction_length;
     }
 
+    projectile->position = (vec3){
+        enemy_position.x + direction.x * 0.72f,
+        enemy_position.y + direction.y * 0.72f,
+        enemy_position.z
+    };
+
+    if (projectile_path_hits_obstacle(room_index, enemy_position, projectile->position, PROJECTILE_RADIUS)) {
+        return;
+    }
+
     projectile->active = true;
     projectile->hostile = true;
     projectile->room_index = room_index;
-    projectile->position = (vec3){
-        enemy_position.x + direction.x * 1.35f,
-        enemy_position.y + direction.y * 1.35f,
-        enemy_position.z
-    };
     projectile->velocity = (vec3){
         direction.x * ENEMY_PROJECTILE_SPEED,
         direction.y * ENEMY_PROJECTILE_SPEED,
